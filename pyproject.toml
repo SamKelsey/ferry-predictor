@@ -2,7 +2,12 @@
 name = "ferry-predictor"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["requests>=2.32"]
+dependencies = [
+    "requests>=2.32",
+    "pandas>=2.2",
+    "numpy>=2.0",
+    "scikit-learn==1.9.1",
+]
 
 [project.optional-dependencies]
 test = ["pytest>=8"]

@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { SailingRow } from './SailingRow'
 import {
   dayLabel,
@@ -69,17 +69,11 @@ export function App() {
       {sailings.length === 0 ? (
         <p className="message">No sailings on this route that day.</p>
       ) : (
-        <>
-          <div className="scale" aria-hidden="true">
-            <span>Ferry unlikely</span>
-            <span>Ferry likely</span>
-          </div>
-          <ol className="sailings" key={`${port}-${direction}-${selected}`}>
-            {sailings.map((s, i) => (
-              <SailingRow key={s.departs} sailing={s} now={now} index={i} />
-            ))}
-          </ol>
-        </>
+        <ol className="sailings" key={`${port}-${direction}-${selected}`}>
+          {sailings.map((s, i) => (
+            <SailingRow key={s.departs} sailing={s} now={now} index={i} />
+          ))}
+        </ol>
       )}
     </Page>
   )
@@ -123,10 +117,12 @@ type ChoiceProps<T extends string> = {
 }
 
 function Choice<T extends string>({ label, options, value, onChange }: ChoiceProps<T>) {
+  const selected = options.indexOf(value)
   return (
     <div className="step" role="group" aria-label={label}>
       <span className="step-label">{label}</span>
-      <div className="choice">
+      <div className="choice" style={{ '--options': options.length, '--selected': selected } as CSSProperties}>
+        <span className="thumb" data-selected={selected} aria-hidden="true" />
         {options.map((option) => (
           <button key={option} aria-pressed={option === value} onClick={() => onChange(option)}>
             {option}

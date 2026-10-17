@@ -1,33 +1,21 @@
 :root {
-  --paper: #f4efe3;
-  --ink: #13283b;
-  --ink-soft: #55677a;
-  --rule: #d4c9b2;
-  --contour: rgb(19 40 59 / 0.09);
-  --accent: #a3175f;
-  --likely: #1d6a4c;
-  --some-risk: #876610;
-  --at-risk: #b04e1b;
-  --unlikely: #a1232b;
+  --paper: #0c1824;
+  --ink: #ebe3cc;
+  --ink-soft: #9db0c1;
+  --rule: #24394d;
+  --well: rgb(235 227 204 / 0.06);
+  --contour: rgb(235 227 204 / 0.07);
+  --accent: #e35fa9;
+  --likely: #63c597;
+  --some-risk: #d9b34c;
+  --at-risk: #ee8b50;
+  --unlikely: #f27272;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --settle: cubic-bezier(0.2, 0.7, 0.2, 1);
   --serif: 'Young Serif', Georgia, serif;
   --sans: 'Hanken Grotesk', system-ui, sans-serif;
   --mono: 'Spline Sans Mono', ui-monospace, monospace;
-  color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0c1824;
-    --ink: #ebe3cc;
-    --ink-soft: #9db0c1;
-    --rule: #24394d;
-    --contour: rgb(235 227 204 / 0.07);
-    --accent: #e35fa9;
-    --likely: #63c597;
-    --some-risk: #d9b34c;
-    --at-risk: #ee8b50;
-    --unlikely: #f27272;
-  }
+  color-scheme: dark;
 }
 
 body {
@@ -58,6 +46,7 @@ button {
   font: inherit;
   color: inherit;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :focus-visible {
@@ -105,24 +94,55 @@ h1 {
 }
 
 .choice {
-  display: inline-flex;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--options), 1fr);
   align-self: flex-start;
-  border: 1.5px solid var(--ink);
+  padding: 4px;
   border-radius: 999px;
-  overflow: hidden;
+  background: var(--well);
+  box-shadow: inset 0 1px 4px rgb(0 0 0 / 0.45);
+  transition: scale 0.3s var(--spring);
 }
 
+.choice:active {
+  scale: 0.97;
+}
+
+.thumb {
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  width: calc((100% - 8px) / var(--options));
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.4);
+  translate: calc(var(--selected) * 100%) 0;
+  transition: translate 0.5s var(--spring);
+  animation: 0.5s var(--spring) both;
+}
+
+/* Two identical keyframes, swapped on each change, so the squish replays every time the selection moves. */
+.thumb[data-selected='0'] { animation-name: squish-a; }
+.thumb[data-selected='1'] { animation-name: squish-b; }
+
 .choice button {
-  padding: 0.5rem 1.1rem;
+  position: relative;
+  padding: 0.55rem 1.2rem;
   border: 0;
-  background: transparent;
+  background: none;
+  color: var(--ink-soft);
   font-weight: 600;
   font-size: 0.95rem;
+  white-space: nowrap;
+  transition: color 0.3s, scale 0.25s var(--spring);
 }
 
 .choice button[aria-pressed='true'] {
-  background: var(--ink);
   color: var(--paper);
+}
+
+.choice button:active {
+  scale: 0.92;
 }
 
 .crossing {
@@ -179,7 +199,7 @@ h1 {
   gap: 0.2rem 1rem;
   padding: 1.15rem 0;
   border-bottom: 1px dashed var(--rule);
-  animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: rise 0.45s var(--settle) both;
   animation-delay: calc(var(--index) * 45ms);
 }
 
@@ -215,7 +235,7 @@ h1 {
   grid-area: verdict;
   display: grid;
   grid-template-columns: auto 1fr;
-  align-items: baseline;
+  align-items: center;
   column-gap: 0.7rem;
 }
 
@@ -225,51 +245,52 @@ h1 {
   color: var(--tone);
 }
 
+.reading {
+  display: flex;
+  flex-direction: column;
+}
+
+.meaning {
+  font: 0.72rem var(--mono);
+  color: var(--ink-soft);
+}
+
 .headline {
   font-weight: 600;
   color: var(--tone);
 }
 
-.scale {
-  display: flex;
-  justify-content: space-between;
-  margin: 1.4rem 0 0 7.5rem;
-  font: 500 0.66rem var(--mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.scale span:first-child { color: var(--unlikely); }
-.scale span:last-child { color: var(--likely); }
-
 .track {
   position: relative;
   grid-column: 1 / -1;
-  height: 6px;
-  margin: 0.7rem 0 0.3rem;
-  border-radius: 3px;
+  height: 8px;
+  margin: 0.75rem 0 0.35rem;
+  border-radius: 4px;
+  background: var(--rule);
 }
 
-.track::before {
-  content: '';
+.fill {
   position: absolute;
-  inset: 0;
+  inset: 0 auto 0 0;
+  width: var(--chance);
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--unlikely) 15%, var(--at-risk) 50%, var(--some-risk) 78%, var(--likely) 95%);
-  opacity: 0.32;
+  background: var(--tone);
+  animation: fill 0.7s var(--settle) both;
+  animation-delay: calc(var(--index) * 45ms + 0.1s);
 }
 
 .marker {
   position: absolute;
   top: 50%;
-  width: 15px;
-  height: 15px;
+  left: var(--chance);
+  width: 16px;
+  height: 16px;
   border: 3px solid var(--paper);
   border-radius: 50%;
   background: var(--tone);
   box-shadow: 0 0 0 1.5px var(--tone);
   transform: translate(-50%, -50%);
-  animation: sail 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: sail 0.7s var(--settle) both;
   animation-delay: calc(var(--index) * 45ms + 0.1s);
 }
 
@@ -306,7 +327,13 @@ h1 {
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    translate: 0 6px;
+  }
+}
+
+@keyframes fill {
+  from {
+    width: 0;
   }
 }
 
@@ -316,9 +343,27 @@ h1 {
   }
 }
 
+@keyframes squish-a {
+  30% { scale: 1.14 0.82; }
+  60% { scale: 0.96 1.06; }
+}
+
+@keyframes squish-b {
+  30% { scale: 1.14 0.82; }
+  60% { scale: 0.96 1.06; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sailing,
-  .marker {
+  .fill,
+  .marker,
+  .thumb {
     animation: none;
+  }
+
+  .thumb,
+  .choice,
+  .choice button {
+    transition: none;
   }
 }

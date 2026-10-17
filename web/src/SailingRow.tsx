@@ -33,9 +33,13 @@ export function SailingRow({ sailing, now, index }: Props) {
         {!cancelled && !departed && chance !== null && (
           <>
             <span className="chance">{Math.round(chance * 100)}%</span>
-            <span className="headline">{OUTLOOK_WORDS[outlook(chance)]}</span>
-            <span className="track" aria-hidden="true">
-              <span className="marker" style={{ left: `${chance * 100}%` }} />
+            <span className="reading">
+              <span className="meaning">chance it sails</span>
+              <span className="headline">{OUTLOOK_WORDS[outlook(chance)]}</span>
+            </span>
+            <span className="track" aria-hidden="true" style={{ '--chance': `${chance * 100}%` } as CSSProperties}>
+              <span className="fill" />
+              <span className="marker" />
             </span>
           </>
         )}

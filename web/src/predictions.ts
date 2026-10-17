@@ -16,7 +16,7 @@ export type Predictions = {
 
 export type Port = 'Troon' | 'Ardrossan'
 export type Direction = 'To Arran' | 'From Arran'
-export type Outlook = 'likely' | 'some-risk' | 'at-risk' | 'unlikely'
+export type Outlook = 'likely' | 'hopeful' | 'possible' | 'doubtful' | 'unlikely'
 
 const LONDON = 'Europe/London'
 const DAY_MS = 86_400_000
@@ -63,7 +63,8 @@ export function onRoute(sailing: Sailing, port: Port, direction: Direction): boo
 
 export function outlook(chance: number): Outlook {
   if (chance >= 0.9) return 'likely'
-  if (chance >= 0.7) return 'some-risk'
-  if (chance >= 0.4) return 'at-risk'
+  if (chance >= 0.7) return 'hopeful'
+  if (chance >= 0.5) return 'possible'
+  if (chance >= 0.4) return 'doubtful'
   return 'unlikely'
 }

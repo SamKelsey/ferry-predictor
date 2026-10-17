@@ -7,8 +7,9 @@
   --contour: rgb(235 227 204 / 0.07);
   --accent: #e35fa9;
   --likely: #63c597;
-  --some-risk: #d9b34c;
-  --at-risk: #ee8b50;
+  --hopeful: #b6c75a;
+  --possible: #e2b94b;
+  --doubtful: #ef8a4f;
   --unlikely: #f27272;
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --settle: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -204,8 +205,9 @@ h1 {
 }
 
 .sailing.likely { --tone: var(--likely); }
-.sailing.some-risk { --tone: var(--some-risk); }
-.sailing.at-risk { --tone: var(--at-risk); }
+.sailing.hopeful { --tone: var(--hopeful); }
+.sailing.possible { --tone: var(--possible); }
+.sailing.doubtful { --tone: var(--doubtful); }
 .sailing.unlikely,
 .sailing.cancelled { --tone: var(--unlikely); }
 .sailing.departed { opacity: 0.45; }

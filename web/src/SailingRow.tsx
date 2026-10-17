@@ -33,6 +33,7 @@ export function SailingRow({ sailing, now, index }: Props) {
             <span className="track" aria-hidden="true" style={{ '--chance': `${chance * 100}%` } as CSSProperties}>
               <span className="fill" />
               <span className="marker" />
+              {state === 'likely' && <Celebration />}
             </span>
           </>
         )}
@@ -48,5 +49,18 @@ export function SailingRow({ sailing, now, index }: Props) {
         {sailing.gust_knots !== null && !cancelled && !departed && <span>Gusts {sailing.gust_knots} kn</span>}
       </div>
     </li>
+  )
+}
+
+const CONFETTI_PIECES = 10
+
+function Celebration() {
+  return (
+    <span className="celebration">
+      {Array.from({ length: CONFETTI_PIECES }, (_, piece) => (
+        <span key={piece} className="confetti" style={{ '--piece': piece } as CSSProperties} />
+      ))}
+      <span className="toot">toot toot!</span>
+    </span>
   )
 }

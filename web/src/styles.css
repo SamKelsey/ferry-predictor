@@ -56,6 +56,7 @@ button {
 }
 
 .page {
+  overflow-x: clip;
   max-width: 40rem;
   margin: 0 auto;
   padding: 2.75rem 1.25rem 3rem;
@@ -296,6 +297,48 @@ h1 {
   animation-delay: calc(var(--index) * 45ms + 0.1s);
 }
 
+.celebration {
+  position: absolute;
+  top: 50%;
+  left: var(--chance);
+  pointer-events: none;
+}
+
+.confetti {
+  --angle: calc(-175deg + var(--piece) * 10deg);
+  --distance: 34px;
+  position: absolute;
+  width: 5px;
+  height: 9px;
+  border-radius: 1px;
+  background: var(--likely);
+  animation: burst 0.9s var(--settle) both;
+  animation-delay: calc(var(--index) * 45ms + 0.75s);
+}
+
+.confetti:nth-child(even) { --distance: 48px; }
+.confetti:nth-child(4n + 2) { background: var(--possible); }
+.confetti:nth-child(4n + 3) { background: var(--accent); }
+.confetti:nth-child(4n + 4) { background: var(--ink); }
+
+.toot {
+  position: absolute;
+  right: -10px;
+  bottom: 16px;
+  z-index: 1;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: 0 0 0 1.5px var(--likely);
+  white-space: nowrap;
+  font: 600 0.72rem var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--likely);
+  transform-origin: bottom right;
+  animation: toot 1.4s var(--settle) both;
+  animation-delay: calc(var(--index) * 45ms + 0.75s);
+}
+
 .notes {
   grid-area: notes;
   display: flex;
@@ -345,6 +388,48 @@ h1 {
   }
 }
 
+@keyframes burst {
+  0% {
+    opacity: 0;
+    translate: -50% -50%;
+  }
+  8% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+    translate: calc(cos(var(--angle)) * var(--distance) - 50%) calc(sin(var(--angle)) * var(--distance) - 50%);
+  }
+  100% {
+    opacity: 0;
+    translate: calc(cos(var(--angle)) * var(--distance) * 1.15 - 50%) calc(sin(var(--angle)) * var(--distance) + 14px - 50%);
+    rotate: 540deg;
+  }
+}
+
+@keyframes toot {
+  0% {
+    opacity: 0;
+    scale: 0.4;
+    translate: 0 6px;
+  }
+  18% {
+    opacity: 1;
+    scale: 1.15;
+    translate: 0 0;
+  }
+  30% {
+    scale: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+}
+
 @keyframes squish-a {
   30% { scale: 1.14 0.82; }
   60% { scale: 0.96 1.06; }
@@ -356,6 +441,10 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .celebration {
+    display: none;
+  }
+
   .sailing,
   .fill,
   .marker,

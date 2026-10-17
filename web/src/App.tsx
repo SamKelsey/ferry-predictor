@@ -6,7 +6,6 @@ import {
   daysBetween,
   load,
   localDate,
-  localTime,
   onRoute,
   type Direction,
   type Port,
@@ -44,7 +43,7 @@ export function App() {
   const [from, to] = direction === 'To Arran' ? [port, 'Brodick'] : ['Brodick', port]
 
   return (
-    <Page updated={predictions.generated_at}>
+    <Page>
       <nav className="controls" aria-label="Route">
         <Choice label="Which way?" options={DIRECTIONS} value={direction} onChange={setDirection} />
         <Choice label={direction === 'To Arran' ? 'Sailing from' : 'Sailing to'} options={PORTS} value={port} onChange={setPort} />
@@ -79,7 +78,7 @@ export function App() {
   )
 }
 
-function Page({ children, updated }: { children: ReactNode; updated?: string }) {
+function Page({ children }: { children: ReactNode }) {
   return (
     <main className="page">
       <header className="masthead">
@@ -95,14 +94,12 @@ function Page({ children, updated }: { children: ReactNode; updated?: string }) 
           <a href="https://www.calmac.co.uk/service-status">CalMac's service status</a> before you travel.
         </p>
         <p>
-          Chances come from a model trained on CalMac's records of past sailings and the weather forecasts made at
-          the time. It can't foresee breakdowns or crew shortages.
+          We calculate sailing probabilities from a model trained on CalMac's records of past sailings and weather
+          forecasts. We can't foresee breakdowns or crew shortages… yet.
         </p>
         <p>
-          Weather forecast by <a href="https://open-meteo.com/">Open-Meteo.com</a>, licensed under{' '}
-          <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
-          {updated && <> Updated at {localTime(updated)}.</>}{' '}
-          <a href="https://github.com/SamKelsey/ferry-predictor">Source</a>.
+          Weather data by <a href="https://open-meteo.com/">Open-Meteo.com</a> (
+          <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>).
         </p>
       </footer>
     </main>

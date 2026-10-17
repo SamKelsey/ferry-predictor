@@ -1,12 +1,5 @@
 import type { CSSProperties } from 'react'
-import { localTime, outlook, type Outlook, type Sailing } from './predictions'
-
-const OUTLOOK_WORDS: Record<Outlook, string> = {
-  likely: 'Ferry likely',
-  'some-risk': 'Ferry hopeful',
-  'at-risk': 'Ferry doubtful',
-  unlikely: 'Ferry unlikely',
-}
+import { localTime, outlook, type Sailing } from './predictions'
 
 type Props = {
   sailing: Sailing
@@ -35,7 +28,7 @@ export function SailingRow({ sailing, now, index }: Props) {
             <span className="chance">{Math.round(chance * 100)}%</span>
             <span className="reading">
               <span className="meaning">chance it sails</span>
-              <span className="headline">{OUTLOOK_WORDS[outlook(chance)]}</span>
+              <span className="headline">Ferry {outlook(chance)}</span>
             </span>
             <span className="track" aria-hidden="true" style={{ '--chance': `${chance * 100}%` } as CSSProperties}>
               <span className="fill" />

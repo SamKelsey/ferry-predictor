@@ -70,9 +70,12 @@ describe('outlook', () => {
   it.each([
     { chance: 0.97, expected: 'likely' },
     { chance: 0.9, expected: 'likely' },
-    { chance: 0.89, expected: 'some-risk' },
-    { chance: 0.7, expected: 'some-risk' },
-    { chance: 0.55, expected: 'at-risk' },
+    { chance: 0.89, expected: 'hopeful' },
+    { chance: 0.7, expected: 'hopeful' },
+    { chance: 0.69, expected: 'possible' },
+    { chance: 0.5, expected: 'possible' },
+    { chance: 0.49, expected: 'doubtful' },
+    { chance: 0.4, expected: 'doubtful' },
     { chance: 0.39, expected: 'unlikely' },
   ])('$chance is $expected', ({ chance, expected }) => {
     expect(outlook(chance)).toBe(expected)

@@ -1,4 +1,5 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import mark from './mark.svg'
 import { SailingRow } from './SailingRow'
 import {
   dayLabel,
@@ -15,6 +16,8 @@ import {
 const PORTS: Port[] = ['Troon', 'Ardrossan']
 const DIRECTIONS: Direction[] = ['To Arran', 'From Arran']
 const UNCERTAIN_FROM_DAYS = 3
+const EMAIL = 'samjkelsey1@gmail.com'
+const COPIED_FOR_MS = 2000
 
 export function App() {
   const [predictions, setPredictions] = useState<Predictions | null>(null)
@@ -82,7 +85,10 @@ function Page({ children }: { children: ReactNode }) {
   return (
     <main className="page">
       <header className="masthead">
-        <p className="wordmark">Ferry Likely</p>
+        <p className="wordmark">
+          <img src={mark} alt="" width="22" height="22" />
+          Ferry Likely
+        </p>
         <h1>Will the Arran ferry sail?</h1>
       </header>
 
@@ -94,9 +100,16 @@ function Page({ children }: { children: ReactNode }) {
           <a href="https://www.calmac.co.uk/service-status">CalMac's service status</a> before you travel.
         </p>
         <p>
-          We calculate sailing probabilities from a model trained on CalMac's records of past sailings and weather
-          forecasts. We can't foresee breakdowns or crew shortages… yet.
+          I built this model after my family moved to Arran and I had to navigate the ferries! It combines weather
+          forecasts with CalMac's records of every Arran sailing since 2021. Shoutout to CalMac for sharing such
+          fantastic data to build this with!
         </p>
+        <p>
+          Help me make it better by{' '}
+          <a href="https://github.com/SamKelsey/ferry-predictor">contributing to the code</a>, or let me know if
+          there's an issue or something you'd like added:
+        </p>
+        <CopyEmail />
         <p>
           Weather data by <a href="https://open-meteo.com/">Open-Meteo.com</a> (
           <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>).
@@ -127,5 +140,27 @@ function Choice<T extends string>({ label, options, value, onChange }: ChoicePro
         ))}
       </div>
     </div>
+  )
+}
+
+function CopyEmail() {
+  const [copied, setCopied] = useState(false)
+  const address = useRef<HTMLSpanElement>(null)
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(EMAIL)
+      setCopied(true)
+      setTimeout(() => setCopied(false), COPIED_FOR_MS)
+    } catch {
+      window.getSelection()?.selectAllChildren(address.current!)
+    }
+  }
+
+  return (
+    <p className="email">
+      <span ref={address}>{EMAIL}</span>
+      <button onClick={copy}>{copied ? 'Copied!' : 'Copy'}</button>
+    </p>
   )
 }

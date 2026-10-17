@@ -82,7 +82,7 @@ function Page({ children }: { children: ReactNode }) {
   return (
     <main className="page">
       <header className="masthead">
-        <p className="eyebrow">Unofficial forecast · Firth of Clyde</p>
+        <p className="wordmark">Ferry Likely</p>
         <h1>Will the Arran ferry sail?</h1>
       </header>
 

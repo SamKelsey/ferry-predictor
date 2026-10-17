@@ -25,6 +25,7 @@ def main(model_path: Path, out_path: Path) -> None:
     leads = (sailings.date - pd.Timestamp(today)).dt.days.to_numpy()
     risk = model.risk(model.load(model_path), X, leads)
 
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps({
         'generated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
         'sailings': entries(sailings, X.port_gust_window, risk),

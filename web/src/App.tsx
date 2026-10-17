@@ -94,22 +94,27 @@ function Page({ children }: { children: ReactNode }) {
 
       {children}
 
-      <footer className="small-print">
-        <p>
-          Not affiliated with CalMac. Always check{' '}
-          <a href="https://www.calmac.co.uk/service-status">CalMac's service status</a> before you travel.
-        </p>
+      <section className="about">
+        <h2>Help me make it better</h2>
         <p>
           I built this model after my family moved to Arran and I had to navigate the ferries! It combines weather
           forecasts with CalMac's records of every Arran sailing since 2021. Shoutout to CalMac for sharing such
           fantastic data to build this with!
         </p>
+        <p>Spotted a problem, or got something you'd like added? Contribute to the code, or drop me an email.</p>
+        <div className="contact">
+          <a className="github" href="https://github.com/SamKelsey/ferry-predictor">
+            Contribute on GitHub
+          </a>
+          <CopyEmail />
+        </div>
+      </section>
+
+      <footer className="small-print">
         <p>
-          Help me make it better by{' '}
-          <a href="https://github.com/SamKelsey/ferry-predictor">contributing to the code</a>, or let me know if
-          there's an issue or something you'd like added:
+          Not affiliated with CalMac. Always check{' '}
+          <a href="https://www.calmac.co.uk/service-status">CalMac's service status</a> before you travel.
         </p>
-        <CopyEmail />
         <p>
           Weather data by <a href="https://open-meteo.com/">Open-Meteo.com</a> (
           <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>).
@@ -158,9 +163,9 @@ function CopyEmail() {
   }
 
   return (
-    <p className="email">
+    <span className="email">
       <span ref={address}>{EMAIL}</span>
       <button onClick={copy}>{copied ? 'Copied!' : 'Copy'}</button>
-    </p>
+    </span>
   )
 }

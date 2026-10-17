@@ -360,32 +360,59 @@ h1 {
   color: var(--ink-soft);
 }
 
-.small-print {
-  margin-top: 3rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--rule);
-  font-size: 0.8rem;
-  color: var(--ink-soft);
+.about {
+  margin-top: 3.5rem;
+  padding: 1.6rem 1.5rem 1.5rem;
+  border-radius: 18px;
+  background: var(--well);
+  box-shadow: inset 0 0 0 1px var(--rule);
 }
 
-.small-print p {
-  margin: 0 0 0.6rem;
+.about h2 {
+  margin: 0 0 0.8rem;
+  font: 400 1.65rem / 1.15 var(--serif);
 }
 
-.small-print .email {
+.about p {
+  margin: 0 0 0.8rem;
+  font-size: 0.95rem;
+}
+
+.contact {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.2rem;
+}
+
+.github {
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: scale 0.25s var(--spring);
+}
+
+.github:active {
+  scale: 0.95;
+}
+
+.email {
+  display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 1.1rem;
-  font: 0.82rem var(--mono);
-  color: var(--ink);
+  font: 0.85rem var(--mono);
 }
 
 .email button {
-  padding: 0.2rem 0.7rem;
+  padding: 0.25rem 0.75rem;
   border: 0;
   border-radius: 999px;
-  background: var(--well);
+  background: var(--paper);
   box-shadow: inset 0 0 0 1px var(--rule);
   color: var(--ink-soft);
   font: 500 0.72rem var(--mono);
@@ -394,6 +421,16 @@ h1 {
 
 .email button:active {
   scale: 0.92;
+}
+
+.small-print {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.small-print p {
+  margin: 0 0 0.4rem;
 }
 
 @keyframes rise {

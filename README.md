@@ -8,6 +8,7 @@ This is an unofficial project, not affiliated with CalMac. Always check [CalMac'
 
 - `ferry.poll` runs every 10 minutes on GitHub Actions. It records the status of every sailing in the next eight days, each route's service notices and the vessels assigned to each route. Only changes are written, as rows appended to CSV files on the [`data`](../../tree/data) branch.
 - `ferry.predict` takes the next eight days of sailings from CalMac and the latest GFS forecast from [Open-Meteo](https://open-meteo.com/), and writes each sailing's chance of sailing to `predictions.json`. Sailings CalMac has already cancelled get no prediction.
+- The site in `web/` is a static React page that reads `predictions.json`. The publish workflow regenerates the predictions and redeploys it to GitHub Pages every hour.
 - `ferry.train` fits the model in `models/model.joblib`. It learns from every Arran sailing since March 2021 in CalMac's response to freedom of information request FOI 4377, using the GFS forecasts that existed at the time. Its probabilities are calibrated separately for each day of lead time, against forecasts made that many days before each sailing, so they become less certain further ahead. The FOI data itself is not in this repository.
 
 ## Accuracy
@@ -38,6 +39,13 @@ Predict the next eight days:
 
 ```bash
 .venv/bin/python -m ferry.predict models/model.joblib predictions.json
+```
+
+Run the site locally against fresh predictions:
+
+```bash
+.venv/bin/python -m ferry.predict models/model.joblib web/public/predictions.json
+cd web && npm install && npm run dev
 ```
 
 Retrain, given CalMac's FOI 4377 CSV:

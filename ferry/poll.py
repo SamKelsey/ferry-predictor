@@ -4,9 +4,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from ferry import calmac, logbook
-
-PORT_PAIRS = [('Ardrossan', 'Brodick'), ('Brodick', 'Ardrossan'), ('Troon', 'Brodick'), ('Brodick', 'Troon')]
-ROUTE_CODES = ['003', '301']
+from ferry.routes import PORT_PAIRS, ROUTE_CODES
 DAYS_WATCHED = 8
 
 

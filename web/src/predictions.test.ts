@@ -57,10 +57,10 @@ describe('days', () => {
 
 describe('onRoute', () => {
   it.each([
-    { name: 'Troon to Brodick is Troon to Arran', s: sailing('Troon', 'Brodick'), port: 'Troon', direction: 'To Arran', expected: true },
-    { name: 'Brodick to Troon is Troon from Arran', s: sailing('Brodick', 'Troon'), port: 'Troon', direction: 'From Arran', expected: true },
-    { name: 'Brodick to Troon is not Troon to Arran', s: sailing('Brodick', 'Troon'), port: 'Troon', direction: 'To Arran', expected: false },
-    { name: 'Ardrossan sailings are not on the Troon route', s: sailing('Ardrossan', 'Brodick'), port: 'Troon', direction: 'To Arran', expected: false },
+    { name: 'Troon to Brodick is Troon to Brodick', s: sailing('Troon', 'Brodick'), port: 'Troon', direction: 'To Brodick', expected: true },
+    { name: 'Brodick to Troon is Troon from Brodick', s: sailing('Brodick', 'Troon'), port: 'Troon', direction: 'From Brodick', expected: true },
+    { name: 'Brodick to Troon is not Troon to Brodick', s: sailing('Brodick', 'Troon'), port: 'Troon', direction: 'To Brodick', expected: false },
+    { name: 'Ardrossan sailings are not on the Troon route', s: sailing('Ardrossan', 'Brodick'), port: 'Troon', direction: 'To Brodick', expected: false },
   ] as const)('$name', ({ s, port, direction, expected }) => {
     expect(onRoute(s, port, direction)).toBe(expected)
   })

@@ -15,7 +15,7 @@ export type Predictions = {
 }
 
 export type Port = 'Troon' | 'Ardrossan'
-export type Direction = 'To Arran' | 'From Arran'
+export type Direction = 'To Brodick' | 'From Brodick'
 export type Outlook = 'likely' | 'hopeful' | 'possible' | 'doubtful' | 'unlikely'
 
 const LONDON = 'Europe/London'
@@ -56,7 +56,7 @@ export function days(sailings: Sailing[]): string[] {
 }
 
 export function onRoute(sailing: Sailing, port: Port, direction: Direction): boolean {
-  return direction === 'To Arran'
+  return direction === 'To Brodick'
     ? sailing.origin === port && sailing.destination === 'Brodick'
     : sailing.origin === 'Brodick' && sailing.destination === port
 }

@@ -49,6 +49,15 @@ Run the site locally against fresh predictions:
 cd web && npm install && npm run dev
 ```
 
+Score the live predictions against what actually sailed, from a checkout of the `data` branch:
+
+```bash
+git worktree add data data
+.venv/bin/python -m ferry.score data
+```
+
+For each sailing that has departed, it takes the latest prediction made before departure at each number of days ahead, and counts the sailing as cancelled if its latest status is `CANCELLED`. It prints AUC, Brier score and predicted against actual cancellation rate for each number of days ahead, comparable with the table above, then how often sailings in each ten-point chance band actually sailed.
+
 Retrain, given CalMac's FOI 4377 CSV:
 
 ```bash

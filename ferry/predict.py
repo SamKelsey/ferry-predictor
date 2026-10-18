@@ -1,20 +1,23 @@
+import hashlib
 import json
 import sys
 from dataclasses import asdict
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
 
-from ferry import calmac, features, model, openmeteo
+from ferry import calmac, features, logbook, model, openmeteo
 from ferry.routes import PORT_PAIRS, ROUTE_CODES
 
 DAYS_AHEAD = 8
+LOG_KEY = ('origin', 'destination', 'departs')
 
 
-def main(model_path: Path, out_path: Path) -> None:
+def main(model_path: Path, out_path: Path, log_path: Path | None) -> None:
+    generated_at = datetime.now(timezone.utc).isoformat(timespec='seconds')
     today = datetime.now(ZoneInfo('Europe/London')).date()
     end = today + timedelta(days=DAYS_AHEAD)
     found = [s for origin, destination in PORT_PAIRS for s in calmac.sailings(origin, destination, today, end)]
@@ -25,11 +28,13 @@ def main(model_path: Path, out_path: Path) -> None:
     leads = (sailings.date - pd.Timestamp(today)).dt.days.to_numpy()
     risk = model.risk(model.load(model_path), X, leads)
 
+    rows = entries(sailings, X.port_gust_window, risk)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps({
-        'generated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
-        'sailings': entries(sailings, X.port_gust_window, risk),
-    }, indent=1))
+    out_path.write_text(json.dumps({'generated_at': generated_at, 'sailings': rows}, indent=1))
+
+    if log_path:
+        model_sha256 = hashlib.sha256(model_path.read_bytes()).hexdigest()[:12]
+        logbook.record(log_path, log_rows(rows, today, model_sha256), LOG_KEY, generated_at)
 
 
 def frame(found: list[calmac.Sailing]) -> pd.DataFrame:
@@ -64,5 +69,23 @@ def entries(sailings: pd.DataFrame, gusts: pd.Series, risk: np.ndarray) -> list[
     return sorted(rows, key=lambda r: r['departs'])
 
 
+def log_rows(entries: list[dict], today: date, model_sha256: str) -> list[logbook.Row]:
+    """The page's entries as rows for the predictions log, with each sailing's days ahead and the model that scored it."""
+    rows = []
+    for e in entries:
+        departs_on = datetime.fromisoformat(e['departs']).astimezone(ZoneInfo('Europe/London')).date()
+        rows.append({k: '' if v is None else str(v) for k, v in {
+            'origin': e['origin'],
+            'destination': e['destination'],
+            'departs': e['departs'],
+            'days_ahead': (departs_on - today).days,
+            'status': e['status'],
+            'gust_knots': e['gust_knots'],
+            'chance_of_sailing': e['chance_of_sailing'],
+            'model_sha256': model_sha256,
+        }.items()})
+    return rows
+
+
 if __name__ == '__main__':
-    main(Path(sys.argv[1]), Path(sys.argv[2]))
+    main(Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3]) if len(sys.argv) > 3 else None)

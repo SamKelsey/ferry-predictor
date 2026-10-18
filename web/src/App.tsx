@@ -119,7 +119,6 @@ function Page({ children }: { children: ReactNode }) {
           Weather data by <a href="https://open-meteo.com/">Open-Meteo.com</a> (
           <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>).
         </p>
-        <p>Visits are counted anonymously with PostHog, without cookies.</p>
       </footer>
     </main>
   )

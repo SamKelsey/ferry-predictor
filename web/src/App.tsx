@@ -14,7 +14,7 @@ import {
 } from './predictions'
 
 const PORTS: Port[] = ['Troon', 'Ardrossan']
-const DIRECTIONS: Direction[] = ['To Arran', 'From Arran']
+const DIRECTIONS: Direction[] = ['To Brodick', 'From Brodick']
 const UNCERTAIN_FROM_DAYS = 3
 const EMAIL = 'samjkelsey1@gmail.com'
 const COPIED_FOR_MS = 2000
@@ -23,7 +23,7 @@ export function App() {
   const [predictions, setPredictions] = useState<Predictions | null>(null)
   const [failed, setFailed] = useState(false)
   const [port, setPort] = useState<Port>('Troon')
-  const [direction, setDirection] = useState<Direction>('To Arran')
+  const [direction, setDirection] = useState<Direction>('To Brodick')
   const [day, setDay] = useState<string | null>(null)
 
   useEffect(() => {
@@ -43,13 +43,13 @@ export function App() {
   const selected = day !== null && available.includes(day) ? day : available[0]
   const ahead = daysBetween(today, selected)
   const sailings = predictions.sailings.filter((s) => onRoute(s, port, direction) && localDate(s.departs) === selected)
-  const [from, to] = direction === 'To Arran' ? [port, 'Brodick'] : ['Brodick', port]
+  const [from, to] = direction === 'To Brodick' ? [port, 'Brodick'] : ['Brodick', port]
 
   return (
     <Page>
       <nav className="controls" aria-label="Route">
         <Choice label="Which way?" options={DIRECTIONS} value={direction} onChange={setDirection} />
-        <Choice label={direction === 'To Arran' ? 'Sailing from' : 'Sailing to'} options={PORTS} value={port} onChange={setPort} />
+        <Choice label={direction === 'To Brodick' ? 'Sailing from' : 'Sailing to'} options={PORTS} value={port} onChange={setPort} />
       </nav>
 
       <h2 className="crossing">

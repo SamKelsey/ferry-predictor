@@ -259,7 +259,7 @@ h1 {
   font-weight: 600;
 }
 
-.paused-note {
+.disruption-note {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -269,14 +269,20 @@ h1 {
   color: var(--ink-soft);
 }
 
-.paused-note a {
+.disruption-note a {
   flex: none;
-  padding: 0.45rem 0.9rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--ink);
   font: 600 0.8rem var(--sans);
   text-decoration: none;
+}
+
+.disruption-note.paused a {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: none;
 }
 
 .days {

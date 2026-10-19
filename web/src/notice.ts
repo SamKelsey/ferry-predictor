@@ -40,19 +40,14 @@ export function routeFor(routes: Route[] | undefined, port: Port): Route | undef
 }
 
 /**
- * Whether a disruption notice covers this departure, so the notice should be trusted over a prediction.
- * A notice covers its whole first day, as CalMac posts them after some of that day's sailings are already affected.
+ * The route as it stands on one UK date: the disruption notices covering that day, and the worst of their statuses.
+ * Be-aware notices are left out, as they often run for months about things like timetable changes.
  */
-export function disrupted(route: Route | undefined, departs: string): boolean {
-  return (route?.notices ?? []).some(
-    (n) => SEVERE.includes(n.status) && localDate(n.starts) <= localDate(departs) && Date.parse(departs) < Date.parse(n.ends),
-  )
-}
-
-/** The route as it stands on one UK date: only the notices covering that day, and the worst of their statuses. */
 export function routeOn(route: Route | undefined, day: string): Route | undefined {
   if (!route) return undefined
-  const notices = route.notices.filter((n) => localDate(n.starts) <= day && day <= localDate(Date.parse(n.ends) - 1))
+  const notices = route.notices.filter(
+    (n) => SEVERE.includes(n.status) && localDate(n.starts) <= day && day <= localDate(Date.parse(n.ends) - 1),
+  )
   const status = notices.reduce<RouteStatus>((worst, n) => (ORDER.indexOf(n.status) > ORDER.indexOf(worst) ? n.status : worst), 'NORMAL')
   return { ...route, status, notices }
 }

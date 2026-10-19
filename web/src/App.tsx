@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import mark from './mark.svg'
-import { disrupted, routeFor, routeOn } from './notice'
+import { routeFor, routeOn } from './notice'
 import { SailingRow } from './SailingRow'
 import { ServiceStatus } from './ServiceStatus'
 import {
@@ -48,7 +48,9 @@ export function App() {
   const sailings = predictions.sailings.filter((s) => onRoute(s, port, direction) && localDate(s.departs) === selected)
   const [from, to] = direction === 'To Brodick' ? [port, 'Brodick'] : ['Brodick', port]
   const route = routeOn(routeFor(predictions.routes, port), selected)
-  const paused = sailings.some((s) => s.status !== 'CANCELLED' && disrupted(route, s.departs))
+  const disrupted = route?.status !== undefined && route.status !== 'NORMAL'
+  // Notices react to what's happening now, so only today's predictions give way to them.
+  const paused = disrupted && ahead === 0
 
   return (
     <Page>
@@ -75,9 +77,9 @@ export function App() {
         <p className="caution">This is {ahead} days away, so the weather could still change a lot. Check back nearer the day.</p>
       )}
 
-      {paused && (
-        <p className="paused-note">
-          <span>Predictions paused due to disruption</span>
+      {disrupted && sailings.some((s) => s.status !== 'CANCELLED') && (
+        <p className={`disruption-note${paused ? ' paused' : ''}`}>
+          <span>{paused ? 'Predictions paused due to disruption' : 'Weather-only forecast, so double-check'}</span>
           <a href={SERVICE_STATUS}>Check CalMac</a>
         </p>
       )}
@@ -87,7 +89,7 @@ export function App() {
       ) : (
         <ol className="sailings" key={`${port}-${direction}-${selected}`}>
           {sailings.map((s, i) => (
-            <SailingRow key={s.departs} sailing={s} now={now} index={i} disrupted={disrupted(route, s.departs)} />
+            <SailingRow key={s.departs} sailing={s} now={now} index={i} disrupted={paused} />
           ))}
         </ol>
       )}

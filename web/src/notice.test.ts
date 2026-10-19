@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { disrupted, paragraphs, routeFor, routeOn, type Notice, type Route } from './notice'
+import { paragraphs, routeFor, routeOn, type Notice, type Route } from './notice'
 
 describe('paragraphs', () => {
   it('splits on blank lines and keeps bold text', () => {
@@ -58,36 +58,6 @@ describe('routeFor', () => {
   })
 })
 
-describe('disrupted', () => {
-  function notice(status: Notice['status'], starts = '2026-10-19T05:14:00.000Z', ends = '2026-10-19T23:00:00.000Z'): Notice {
-    return { title: 'Monday 19 October', status, reason: null, starts, ends, updated_at: starts, detail: '' }
-  }
-
-  function route(...notices: Notice[]): Route {
-    return { route: 'ARD', status: 'DISRUPTIONS', notices }
-  }
-
-  it.each([
-    { name: 'a sailing later that day', notices: [notice('DISRUPTIONS')], departs: '2026-10-19T11:30:00.000Z', expected: true },
-    { name: 'a sailing before the notice was posted', notices: [notice('DISRUPTIONS')], departs: '2026-10-19T05:00:00.000Z', expected: true },
-    { name: 'all sailings cancelled', notices: [notice('ALL_SAILINGS_CANCELLED')], departs: '2026-10-19T11:30:00.000Z', expected: true },
-    { name: 'a sailing the next day', notices: [notice('DISRUPTIONS')], departs: '2026-10-20T07:30:00.000Z', expected: false },
-    { name: 'a sailing the day before', notices: [notice('DISRUPTIONS')], departs: '2026-10-18T11:30:00.000Z', expected: false },
-    {
-      name: 'a long be-aware notice',
-      notices: [notice('BE_AWARE', '2026-10-17T23:00:00.000Z', '2027-01-19T00:00:00.000Z')],
-      departs: '2026-10-19T11:30:00.000Z',
-      expected: false,
-    },
-  ])('$name: $expected', ({ notices, departs, expected }) => {
-    expect(disrupted(route(...notices), departs)).toBe(expected)
-  })
-
-  it('is false without route information', () => {
-    expect(disrupted(undefined, '2026-10-19T11:30:00.000Z')).toBe(false)
-  })
-})
-
 describe('routeOn', () => {
   function notice(status: Notice['status'], starts: string, ends: string): Notice {
     return { title: status, status, reason: null, starts, ends, updated_at: starts, detail: '' }
@@ -99,13 +69,17 @@ describe('routeOn', () => {
     notices: [
       notice('DISRUPTIONS', '2026-10-19T06:06:00.000Z', '2026-10-19T23:00:00.000Z'),
       notice('BE_AWARE', '2026-10-17T23:00:00.000Z', '2027-01-19T00:00:00.000Z'),
+      notice('ALL_SAILINGS_CANCELLED', '2026-10-20T23:00:00.000Z', '2026-10-22T23:00:00.000Z'),
     ],
   }
 
   it.each([
-    { day: '2026-10-19', status: 'DISRUPTIONS', titles: ['DISRUPTIONS', 'BE_AWARE'] },
-    { day: '2026-10-20', status: 'BE_AWARE', titles: ['BE_AWARE'] },
-    { day: '2026-10-17', status: 'NORMAL', titles: [] },
+    { day: '2026-10-19', status: 'DISRUPTIONS', titles: ['DISRUPTIONS'] },
+    { day: '2026-10-20', status: 'NORMAL', titles: [] },
+    { day: '2026-10-18', status: 'NORMAL', titles: [] },
+    { day: '2026-10-21', status: 'ALL_SAILINGS_CANCELLED', titles: ['ALL_SAILINGS_CANCELLED'] },
+    { day: '2026-10-22', status: 'ALL_SAILINGS_CANCELLED', titles: ['ALL_SAILINGS_CANCELLED'] },
+    { day: '2026-10-23', status: 'NORMAL', titles: [] },
   ])('$day is $status', ({ day, status, titles }) => {
     const on = routeOn(route, day)
     expect(on?.status).toBe(status)

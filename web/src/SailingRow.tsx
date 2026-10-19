@@ -5,16 +5,21 @@ type Props = {
   sailing: Sailing
   now: number
   index: number
+  disrupted: boolean
 }
 
-export function SailingRow({ sailing, now, index }: Props) {
+
+export function SailingRow({ sailing, now, index, disrupted }: Props) {
   const cancelled = sailing.status === 'CANCELLED'
-  const departed = !cancelled && Date.parse(sailing.rescheduled_departs ?? sailing.departs) < now
+  const passed = !cancelled && Date.parse(sailing.rescheduled_departs ?? sailing.departs) < now
+  // On a disrupted day only CalMac can say what sails, including whether a past sailing really left.
+  const paused = disrupted && !cancelled
+  const departed = passed && !paused
   const chance = sailing.chance_of_sailing
-  const state = cancelled ? 'cancelled' : departed ? 'departed' : chance === null ? 'unknown' : outlook(chance)
+  const state = cancelled ? 'cancelled' : departed ? 'departed' : paused ? 'paused' : chance === null ? 'unknown' : outlook(chance)
 
   return (
-    <li className={`sailing ${state}`} style={{ '--index': index } as CSSProperties}>
+    <li className={`sailing ${state}${passed ? ' passed' : ''}`} style={{ '--index': index } as CSSProperties}>
       <div className="times">
         <span className="departs">{localTime(sailing.departs)}</span>
         <span className="arrives">arrives {localTime(sailing.arrives)}</span>
@@ -23,7 +28,7 @@ export function SailingRow({ sailing, now, index }: Props) {
       <div className="verdict">
         {cancelled && <span className="headline">Cancelled by CalMac</span>}
         {departed && <span className="headline">Departed</span>}
-        {!cancelled && !departed && chance !== null && (
+        {!cancelled && !departed && !paused && chance !== null && (
           <>
             <span className="chance">{Math.round(chance * 100)}%</span>
             <span className="reading">
@@ -46,7 +51,7 @@ export function SailingRow({ sailing, now, index }: Props) {
         {!['SCHEDULED', 'CANCELLED', 'DELAYED'].includes(sailing.status) && (
           <span className="status">CalMac: {sailing.status.toLowerCase().replaceAll('_', ' ')}</span>
         )}
-        {sailing.gust_knots !== null && !cancelled && !departed && <span>Gusts {sailing.gust_knots} kn</span>}
+        {sailing.gust_knots !== null && !cancelled && !departed && !paused && <span>Gusts {sailing.gust_knots} kn</span>}
       </div>
     </li>
   )

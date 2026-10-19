@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import mark from './mark.svg'
+import { routeFor, routeOn } from './notice'
 import { SailingRow } from './SailingRow'
+import { ServiceStatus } from './ServiceStatus'
 import {
   dayLabel,
   days,
@@ -18,6 +20,7 @@ const DIRECTIONS: Direction[] = ['To Brodick', 'From Brodick']
 const UNCERTAIN_FROM_DAYS = 3
 const EMAIL = 'samjkelsey1@gmail.com'
 const COPIED_FOR_MS = 2000
+const SERVICE_STATUS = 'https://www.calmac.co.uk/service-status'
 
 export function App() {
   const [predictions, setPredictions] = useState<Predictions | null>(null)
@@ -44,6 +47,10 @@ export function App() {
   const ahead = daysBetween(today, selected)
   const sailings = predictions.sailings.filter((s) => onRoute(s, port, direction) && localDate(s.departs) === selected)
   const [from, to] = direction === 'To Brodick' ? [port, 'Brodick'] : ['Brodick', port]
+  const route = routeOn(routeFor(predictions.routes, port), selected)
+  const disrupted = route?.status !== undefined && route.status !== 'NORMAL'
+  // Notices react to what's happening now, so only today's predictions give way to them.
+  const paused = disrupted && ahead === 0
 
   return (
     <Page>
@@ -55,6 +62,8 @@ export function App() {
       <h2 className="crossing">
         {from} <span aria-label="to">→</span> {to}
       </h2>
+
+      {route && <ServiceStatus key={`${port}-${selected}`} route={route} today={today} />}
 
       <nav className="days" aria-label="Day">
         {available.map((d) => (
@@ -68,12 +77,19 @@ export function App() {
         <p className="caution">This is {ahead} days away, so the weather could still change a lot. Check back nearer the day.</p>
       )}
 
+      {disrupted && sailings.some((s) => s.status !== 'CANCELLED') && (
+        <p className={`disruption-note${paused ? ' paused' : ''}`}>
+          <span>{paused ? 'Predictions paused due to disruption' : 'Disruption noted for this day, so double-check'}</span>
+          <a href={SERVICE_STATUS}>Check CalMac</a>
+        </p>
+      )}
+
       {sailings.length === 0 ? (
         <p className="message">No sailings on this route that day.</p>
       ) : (
         <ol className="sailings" key={`${port}-${direction}-${selected}`}>
           {sailings.map((s, i) => (
-            <SailingRow key={s.departs} sailing={s} now={now} index={i} />
+            <SailingRow key={s.departs} sailing={s} now={now} index={i} disrupted={paused} />
           ))}
         </ol>
       )}

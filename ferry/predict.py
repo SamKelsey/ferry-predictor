@@ -14,6 +14,7 @@ from ferry.routes import PORT_PAIRS, ROUTE_CODES
 
 DAYS_AHEAD = 8
 LOG_KEY = ('origin', 'destination', 'departs')
+SEVERITY = ['NORMAL', 'BE_AWARE', 'DISRUPTIONS', 'ALL_SAILINGS_CANCELLED']
 
 
 def main(model_path: Path, out_path: Path, log_path: Path | None) -> None:
@@ -29,8 +30,9 @@ def main(model_path: Path, out_path: Path, log_path: Path | None) -> None:
     risk = model.risk(model.load(model_path), X, leads)
 
     rows = entries(sailings, X.port_gust_window, risk)
+    notices = {code: calmac.route(code).notices for code in ROUTE_CODES}
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps({'generated_at': generated_at, 'sailings': rows}, indent=1))
+    out_path.write_text(json.dumps({'generated_at': generated_at, 'sailings': rows, 'routes': routes(notices, generated_at)}, indent=1))
 
     if log_path:
         model_sha256 = hashlib.sha256(model_path.read_bytes()).hexdigest()[:12]
@@ -67,6 +69,32 @@ def entries(sailings: pd.DataFrame, gusts: pd.Series, risk: np.ndarray) -> list[
             'chance_of_sailing': round(1 - float(cancellation_risk), 3) if predicted else None,
         })
     return sorted(rows, key=lambda r: r['departs'])
+
+
+def routes(notices: dict[str, list[calmac.Notice]], now: str) -> list[dict]:
+    """Each route's status and the sailing notices behind it. A route is as disrupted as its worst live notice."""
+    rows = []
+    for code, found in notices.items():
+        live = [n for n in found if n.status == 'SAILING' and n.sub_status in SEVERITY[1:] and _live(n, now)]
+        live.sort(key=lambda n: (SEVERITY.index(n.sub_status), n.updated_at), reverse=True)
+        rows.append({
+            'route': ROUTE_CODES[code],
+            'status': live[0].sub_status if live else 'NORMAL',
+            'notices': [{
+                'title': n.title,
+                'status': n.sub_status,
+                'reason': n.disruption_reason.strip() if n.disruption_reason else None,
+                'starts': n.starts,
+                'ends': n.ends,
+                'updated_at': n.updated_at,
+                'detail': n.detail,
+            } for n in live],
+        })
+    return rows
+
+
+def _live(notice: calmac.Notice, now: str) -> bool:
+    return pd.Timestamp(notice.starts) <= pd.Timestamp(now) < pd.Timestamp(notice.ends)
 
 
 def log_rows(entries: list[dict], today: date, model_sha256: str) -> list[logbook.Row]:

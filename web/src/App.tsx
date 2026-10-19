@@ -79,7 +79,7 @@ export function App() {
 
       {disrupted && sailings.some((s) => s.status !== 'CANCELLED') && (
         <p className={`disruption-note${paused ? ' paused' : ''}`}>
-          <span>{paused ? 'Predictions paused due to disruption' : 'Weather-only forecast, so double-check'}</span>
+          <span>{paused ? 'Predictions paused due to disruption' : 'Disruption noted for this day, so double-check'}</span>
           <a href={SERVICE_STATUS}>Check CalMac</a>
         </p>
       )}

@@ -20,6 +20,7 @@ const DIRECTIONS: Direction[] = ['To Brodick', 'From Brodick']
 const UNCERTAIN_FROM_DAYS = 3
 const EMAIL = 'samjkelsey1@gmail.com'
 const COPIED_FOR_MS = 2000
+const SERVICE_STATUS = 'https://www.calmac.co.uk/service-status'
 
 export function App() {
   const [predictions, setPredictions] = useState<Predictions | null>(null)
@@ -47,6 +48,7 @@ export function App() {
   const sailings = predictions.sailings.filter((s) => onRoute(s, port, direction) && localDate(s.departs) === selected)
   const [from, to] = direction === 'To Brodick' ? [port, 'Brodick'] : ['Brodick', port]
   const route = routeFor(predictions.routes, port)
+  const paused = sailings.some((s) => s.status !== 'CANCELLED' && disrupted(route, s.departs))
 
   return (
     <Page>
@@ -59,7 +61,7 @@ export function App() {
         {from} <span aria-label="to">→</span> {to}
       </h2>
 
-      {route && <ServiceStatus route={route} today={today} />}
+      {route && <ServiceStatus key={port} route={route} today={today} />}
 
       <nav className="days" aria-label="Day">
         {available.map((d) => (
@@ -71,6 +73,13 @@ export function App() {
 
       {ahead >= UNCERTAIN_FROM_DAYS && (
         <p className="caution">This is {ahead} days away, so the weather could still change a lot. Check back nearer the day.</p>
+      )}
+
+      {paused && (
+        <p className="paused-note">
+          <span>Predictions paused</span>
+          <a href={SERVICE_STATUS}>Check CalMac</a>
+        </p>
       )}
 
       {sailings.length === 0 ? (

@@ -160,83 +160,123 @@ h1 {
 }
 
 .service-status {
-  --tone: var(--likely);
-  margin: 0 0 1.1rem;
+  --tone: var(--possible);
+  margin: 0 0 1rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tone) 9%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 22%, transparent);
 }
 
-.service-status.be-aware { --tone: var(--possible); }
 .service-status.disruptions { --tone: var(--doubtful); }
 .service-status.all-sailings-cancelled { --tone: var(--unlikely); }
 
-.service-line {
+.service-status summary {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin: 0;
-  font: 0.75rem var(--mono);
-  color: var(--ink-soft);
-}
-
-.badge {
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--tone) 16%, transparent);
-  color: var(--tone);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.notice {
-  margin-top: 0.6rem;
-  padding: 0.65rem 0.9rem;
-  border-left: 3px solid var(--tone);
-  border-radius: 0 10px 10px 0;
-  background: var(--well);
-  font-size: 0.9rem;
-}
-
-.notice summary {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.15rem 0.6rem;
+  gap: 0.55rem;
+  padding: 0.6rem 0.85rem;
   cursor: pointer;
   list-style: none;
+  font-size: 0.88rem;
 }
 
-.notice summary::-webkit-details-marker {
+.service-status summary::-webkit-details-marker {
   display: none;
 }
 
-.notice summary::after {
-  content: '+';
-  margin-left: auto;
-  font: 500 1rem var(--mono);
+.dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 25%, transparent);
+}
+
+.service-label {
+  font-weight: 600;
   color: var(--tone);
 }
 
-.notice[open] summary::after {
-  content: '−';
+.service-reason {
+  color: var(--ink-soft);
 }
 
-.notice-title {
-  font-weight: 600;
+.service-reason::before {
+  content: '·';
+  margin-right: 0.55rem;
 }
 
-.notice-meta {
-  font: 0.72rem var(--mono);
+.chevron {
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  border: solid var(--ink-soft);
+  border-width: 0 1.5px 1.5px 0;
+  rotate: 45deg;
+  translate: 0 -2px;
+  transition: rotate 0.25s var(--settle), translate 0.25s var(--settle);
+}
+
+.service-status[open] .chevron {
+  rotate: 225deg;
+  translate: 0 2px;
+}
+
+.notices {
+  padding: 0 0.85rem 0.85rem;
+}
+
+.notice + .notice {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid color-mix(in srgb, var(--tone) 18%, transparent);
+}
+
+.notice h3 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 0.75rem;
+  margin: 0.1rem 0 0;
+  font: 600 0.86rem var(--sans);
+}
+
+.notice h3 span {
+  font: 400 0.7rem var(--mono);
   color: var(--ink-soft);
 }
 
 .notice p {
-  margin: 0.6rem 0 0;
+  margin: 0.45rem 0 0;
   color: var(--ink-soft);
+  font-size: 0.86rem;
   overflow-wrap: anywhere;
 }
 
 .notice strong {
   color: var(--ink);
+  font-weight: 600;
+}
+
+.paused-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.1rem 0 0.25rem;
+  font: 0.75rem var(--mono);
+  color: var(--ink-soft);
+}
+
+.paused-note a {
+  flex: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 0.8rem var(--sans);
+  text-decoration: none;
 }
 
 .days {
@@ -294,7 +334,26 @@ h1 {
 .sailing.doubtful { --tone: var(--doubtful); }
 .sailing.unlikely,
 .sailing.cancelled { --tone: var(--unlikely); }
-.sailing.disrupted { --tone: var(--doubtful); }
+.sailing.paused {
+  display: flex;
+  padding: 0.75rem 0;
+  opacity: 0.4;
+}
+
+.paused .times {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+
+.paused .departs {
+  font-size: 1.05rem;
+}
+
+.paused .verdict,
+.paused .notes {
+  display: none;
+}
 .sailing.passed { opacity: 0.45; }
 
 .times {

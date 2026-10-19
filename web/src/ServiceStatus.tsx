@@ -7,40 +7,44 @@ type Props = {
 }
 
 export function ServiceStatus({ route, today }: Props) {
-  return (
-    <section className={`service-status ${route.status.toLowerCase().replaceAll('_', '-')}`} aria-label="CalMac service status">
-      <p className="service-line">
-        <span className="badge">{label(route.status)}</span>
-        <span className="service-source">per CalMac</span>
-      </p>
+  const [lead] = route.notices
+  if (!lead) return null
 
-      {route.notices.map((n) => (
-        <details key={`${n.title}-${n.updated_at}`} className="notice">
-          <summary>
-            <span className="notice-title">{n.title}</span>
-            <span className="notice-meta">
-              {n.reason && <>{n.reason} · </>}
-              updated {updated(n.updated_at, today)}
-            </span>
-          </summary>
-          {paragraphs(n.detail).map((p, i) => (
-            <p key={i}>
-              {p.map((s, j) =>
-                s.href ? (
-                  <a key={j} href={s.href}>
-                    {s.text}
-                  </a>
-                ) : s.bold ? (
-                  <strong key={j}>{s.text}</strong>
-                ) : (
-                  s.text
-                ),
-              )}
-            </p>
-          ))}
-        </details>
-      ))}
-    </section>
+  return (
+    <details className={`service-status ${route.status.toLowerCase().replaceAll('_', '-')}`}>
+      <summary>
+        <span className="dot" aria-hidden="true" />
+        <span className="service-label">{label(route.status)}</span>
+        {lead.reason && <span className="service-reason">{lead.reason}</span>}
+        <span className="chevron" aria-hidden="true" />
+      </summary>
+
+      <div className="notices">
+        {route.notices.map((n) => (
+          <article key={`${n.title}-${n.updated_at}`} className="notice">
+            <h3>
+              {n.title}
+              <span>Updated {updated(n.updated_at, today)}</span>
+            </h3>
+            {paragraphs(n.detail).map((p, i) => (
+              <p key={i}>
+                {p.map((s, j) =>
+                  s.href ? (
+                    <a key={j} href={s.href}>
+                      {s.text}
+                    </a>
+                  ) : s.bold ? (
+                    <strong key={j}>{s.text}</strong>
+                  ) : (
+                    s.text
+                  ),
+                )}
+              </p>
+            ))}
+          </article>
+        ))}
+      </div>
+    </details>
   )
 }
 

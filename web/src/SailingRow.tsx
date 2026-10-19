@@ -8,16 +8,15 @@ type Props = {
   disrupted: boolean
 }
 
-const SERVICE_STATUS = 'https://www.calmac.co.uk/service-status'
 
 export function SailingRow({ sailing, now, index, disrupted }: Props) {
   const cancelled = sailing.status === 'CANCELLED'
   const passed = !cancelled && Date.parse(sailing.rescheduled_departs ?? sailing.departs) < now
-  // On a disrupted day a sailing whose time has passed may not have left, so only CalMac can say.
-  const checkCalmac = disrupted && !cancelled
-  const departed = passed && !checkCalmac
+  // On a disrupted day only CalMac can say what sails, including whether a past sailing really left.
+  const paused = disrupted && !cancelled
+  const departed = passed && !paused
   const chance = sailing.chance_of_sailing
-  const state = cancelled ? 'cancelled' : departed ? 'departed' : checkCalmac ? 'disrupted' : chance === null ? 'unknown' : outlook(chance)
+  const state = cancelled ? 'cancelled' : departed ? 'departed' : paused ? 'paused' : chance === null ? 'unknown' : outlook(chance)
 
   return (
     <li className={`sailing ${state}${passed ? ' passed' : ''}`} style={{ '--index': index } as CSSProperties}>
@@ -29,15 +28,7 @@ export function SailingRow({ sailing, now, index, disrupted }: Props) {
       <div className="verdict">
         {cancelled && <span className="headline">Cancelled by CalMac</span>}
         {departed && <span className="headline">Departed</span>}
-        {checkCalmac && (
-          <span className="reading">
-            <span className="meaning">disruption on this route</span>
-            <a className="headline" href={SERVICE_STATUS}>
-              Check CalMac's status
-            </a>
-          </span>
-        )}
-        {!cancelled && !departed && !checkCalmac && chance !== null && (
+        {!cancelled && !departed && !paused && chance !== null && (
           <>
             <span className="chance">{Math.round(chance * 100)}%</span>
             <span className="reading">
@@ -60,7 +51,7 @@ export function SailingRow({ sailing, now, index, disrupted }: Props) {
         {!['SCHEDULED', 'CANCELLED', 'DELAYED'].includes(sailing.status) && (
           <span className="status">CalMac: {sailing.status.toLowerCase().replaceAll('_', ' ')}</span>
         )}
-        {sailing.gust_knots !== null && !cancelled && !departed && !checkCalmac && <span>Gusts {sailing.gust_knots} kn</span>}
+        {sailing.gust_knots !== null && !cancelled && !departed && !paused && <span>Gusts {sailing.gust_knots} kn</span>}
       </div>
     </li>
   )

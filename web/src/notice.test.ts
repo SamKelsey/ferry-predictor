@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { disrupted, paragraphs, routeFor, type Notice, type Route } from './notice'
+import { disrupted, paragraphs, routeFor, routeOn, type Notice, type Route } from './notice'
 
 describe('paragraphs', () => {
   it('splits on blank lines and keeps bold text', () => {
@@ -85,5 +85,30 @@ describe('disrupted', () => {
 
   it('is false without route information', () => {
     expect(disrupted(undefined, '2026-10-19T11:30:00.000Z')).toBe(false)
+  })
+})
+
+describe('routeOn', () => {
+  function notice(status: Notice['status'], starts: string, ends: string): Notice {
+    return { title: status, status, reason: null, starts, ends, updated_at: starts, detail: '' }
+  }
+
+  const route: Route = {
+    route: 'TRO',
+    status: 'DISRUPTIONS',
+    notices: [
+      notice('DISRUPTIONS', '2026-10-19T06:06:00.000Z', '2026-10-19T23:00:00.000Z'),
+      notice('BE_AWARE', '2026-10-17T23:00:00.000Z', '2027-01-19T00:00:00.000Z'),
+    ],
+  }
+
+  it.each([
+    { day: '2026-10-19', status: 'DISRUPTIONS', titles: ['DISRUPTIONS', 'BE_AWARE'] },
+    { day: '2026-10-20', status: 'BE_AWARE', titles: ['BE_AWARE'] },
+    { day: '2026-10-17', status: 'NORMAL', titles: [] },
+  ])('$day is $status', ({ day, status, titles }) => {
+    const on = routeOn(route, day)
+    expect(on?.status).toBe(status)
+    expect(on?.notices.map((n) => n.title)).toEqual(titles)
   })
 })

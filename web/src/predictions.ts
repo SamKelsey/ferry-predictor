@@ -39,7 +39,7 @@ export function localTime(instant: string): string {
   return time.format(new Date(instant))
 }
 
-export function localDate(instant: string | Date): string {
+export function localDate(instant: string | number | Date): string {
   return isoDate.format(new Date(instant))
 }
 

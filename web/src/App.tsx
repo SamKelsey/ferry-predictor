@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import mark from './mark.svg'
-import { disrupted, routeFor } from './notice'
+import { disrupted, routeFor, routeOn } from './notice'
 import { SailingRow } from './SailingRow'
 import { ServiceStatus } from './ServiceStatus'
 import {
@@ -47,7 +47,7 @@ export function App() {
   const ahead = daysBetween(today, selected)
   const sailings = predictions.sailings.filter((s) => onRoute(s, port, direction) && localDate(s.departs) === selected)
   const [from, to] = direction === 'To Brodick' ? [port, 'Brodick'] : ['Brodick', port]
-  const route = routeFor(predictions.routes, port)
+  const route = routeOn(routeFor(predictions.routes, port), selected)
   const paused = sailings.some((s) => s.status !== 'CANCELLED' && disrupted(route, s.departs))
 
   return (
@@ -61,7 +61,7 @@ export function App() {
         {from} <span aria-label="to">→</span> {to}
       </h2>
 
-      {route && <ServiceStatus key={port} route={route} today={today} />}
+      {route && <ServiceStatus key={`${port}-${selected}`} route={route} today={today} />}
 
       <nav className="days" aria-label="Day">
         {available.map((d) => (
@@ -77,7 +77,7 @@ export function App() {
 
       {paused && (
         <p className="paused-note">
-          <span>Predictions paused</span>
+          <span>Predictions paused due to disruption</span>
           <a href={SERVICE_STATUS}>Check CalMac</a>
         </p>
       )}

@@ -20,7 +20,8 @@ export type Route = {
 
 export type Span = { text: string; bold?: boolean; href?: string }
 
-const SEVERE: RouteStatus[] = ['DISRUPTIONS', 'ALL_SAILINGS_CANCELLED']
+const ORDER: RouteStatus[] = ['NORMAL', 'BE_AWARE', 'DISRUPTIONS', 'ALL_SAILINGS_CANCELLED']
+const SEVERE = ORDER.slice(2)
 
 const ROUTES: Record<Port, Route['route']> = { Ardrossan: 'ARD', Troon: 'TRO' }
 
@@ -46,6 +47,14 @@ export function disrupted(route: Route | undefined, departs: string): boolean {
   return (route?.notices ?? []).some(
     (n) => SEVERE.includes(n.status) && localDate(n.starts) <= localDate(departs) && Date.parse(departs) < Date.parse(n.ends),
   )
+}
+
+/** The route as it stands on one UK date: only the notices covering that day, and the worst of their statuses. */
+export function routeOn(route: Route | undefined, day: string): Route | undefined {
+  if (!route) return undefined
+  const notices = route.notices.filter((n) => localDate(n.starts) <= day && day <= localDate(Date.parse(n.ends) - 1))
+  const status = notices.reduce<RouteStatus>((worst, n) => (ORDER.indexOf(n.status) > ORDER.indexOf(worst) ? n.status : worst), 'NORMAL')
+  return { ...route, status, notices }
 }
 
 export function label(status: RouteStatus): string {

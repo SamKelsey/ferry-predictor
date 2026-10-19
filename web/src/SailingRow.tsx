@@ -37,7 +37,7 @@ export function SailingRow({ sailing, now, index, disrupted }: Props) {
             </span>
             <span className="track" aria-hidden="true" style={{ '--chance': `${chance * 100}%` } as CSSProperties}>
               <span className="fill" />
-              <span className="marker" />
+              <Ferry />
               {state === 'likely' && <Celebration />}
             </span>
           </>
@@ -54,6 +54,25 @@ export function SailingRow({ sailing, now, index, disrupted }: Props) {
         {sailing.gust_knots !== null && !cancelled && !departed && !paused && <span>Gusts {sailing.gust_knots} kn</span>}
       </div>
     </li>
+  )
+}
+
+function Ferry() {
+  return (
+    <span className="marker">
+      <svg viewBox="0 0 30 18" width="38" height="23" aria-hidden="true">
+        <rect className="funnel" x="9" y="1" width="3.5" height="5.5" rx="0.8" />
+        <rect x="14.5" y="3" width="7" height="4" rx="1" />
+        <rect x="5.5" y="6" width="17" height="4.5" rx="1" />
+        <path d="M1 10 H29 L25.5 16 H4 Z" />
+        <g className="windows">
+          <rect x="8" y="7.6" width="2" height="1.4" rx="0.4" />
+          <rect x="11.5" y="7.6" width="2" height="1.4" rx="0.4" />
+          <rect x="15" y="7.6" width="2" height="1.4" rx="0.4" />
+          <rect x="18.5" y="7.6" width="2" height="1.4" rx="0.4" />
+        </g>
+      </svg>
+    </span>
   )
 }
 

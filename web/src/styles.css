@@ -435,15 +435,28 @@ h1 {
   position: absolute;
   top: 50%;
   left: var(--chance);
-  width: 16px;
-  height: 16px;
-  border: 3px solid var(--paper);
-  border-radius: 50%;
-  background: var(--tone);
-  box-shadow: 0 0 0 1.5px var(--tone);
-  transform: translate(-50%, -50%);
+  display: block;
+  line-height: 0;
+  transform: translate(-50%, -80%);
   animation: sail 0.7s var(--settle) both;
   animation-delay: calc(var(--index) * 45ms + 0.1s);
+}
+
+.marker svg {
+  overflow: visible;
+  fill: var(--tone);
+  stroke: var(--paper);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  transform-origin: 50% 90%;
+  animation: bob 0.7s ease-in-out both;
+  animation-delay: calc(var(--index) * 45ms + 0.1s);
+}
+
+.marker .windows {
+  fill: var(--paper);
+  stroke: none;
 }
 
 .celebration {
@@ -473,7 +486,7 @@ h1 {
 .toot {
   position: absolute;
   right: -10px;
-  bottom: 16px;
+  bottom: 22px;
   z-index: 1;
   padding: 0.05rem 0.5rem;
   border-radius: 999px;
@@ -598,6 +611,12 @@ h1 {
   }
 }
 
+@keyframes bob {
+  0%, 100% { rotate: 0deg; translate: 0 0; }
+  30% { rotate: -5deg; translate: 0 -1px; }
+  65% { rotate: 3deg; translate: 0 0.5px; }
+}
+
 @keyframes burst {
   0% {
     opacity: 0;
@@ -658,6 +677,7 @@ h1 {
   .sailing,
   .fill,
   .marker,
+  .marker svg,
   .thumb {
     animation: none;
   }

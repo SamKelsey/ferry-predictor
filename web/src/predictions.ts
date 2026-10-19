@@ -1,3 +1,5 @@
+import type { Route } from './notice'
+
 export type Sailing = {
   origin: string
   destination: string
@@ -12,6 +14,7 @@ export type Sailing = {
 export type Predictions = {
   generated_at: string
   sailings: Sailing[]
+  routes?: Route[]
 }
 
 export type Port = 'Troon' | 'Ardrossan'

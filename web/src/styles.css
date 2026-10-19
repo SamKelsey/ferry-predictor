@@ -159,6 +159,86 @@ h1 {
   color: var(--accent);
 }
 
+.service-status {
+  --tone: var(--likely);
+  margin: 0 0 1.1rem;
+}
+
+.service-status.be-aware { --tone: var(--possible); }
+.service-status.disruptions { --tone: var(--doubtful); }
+.service-status.all-sailings-cancelled { --tone: var(--unlikely); }
+
+.service-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font: 0.75rem var(--mono);
+  color: var(--ink-soft);
+}
+
+.badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
+  color: var(--tone);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.notice {
+  margin-top: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  border-left: 3px solid var(--tone);
+  border-radius: 0 10px 10px 0;
+  background: var(--well);
+  font-size: 0.9rem;
+}
+
+.notice summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.notice summary::-webkit-details-marker {
+  display: none;
+}
+
+.notice summary::after {
+  content: '+';
+  margin-left: auto;
+  font: 500 1rem var(--mono);
+  color: var(--tone);
+}
+
+.notice[open] summary::after {
+  content: '−';
+}
+
+.notice-title {
+  font-weight: 600;
+}
+
+.notice-meta {
+  font: 0.72rem var(--mono);
+  color: var(--ink-soft);
+}
+
+.notice p {
+  margin: 0.6rem 0 0;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.notice strong {
+  color: var(--ink);
+}
+
 .days {
   display: flex;
   gap: 0.15rem;

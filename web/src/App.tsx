@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import mark from './mark.svg'
+import { routeFor } from './notice'
 import { SailingRow } from './SailingRow'
+import { ServiceStatus } from './ServiceStatus'
 import {
   dayLabel,
   days,
@@ -44,6 +46,7 @@ export function App() {
   const ahead = daysBetween(today, selected)
   const sailings = predictions.sailings.filter((s) => onRoute(s, port, direction) && localDate(s.departs) === selected)
   const [from, to] = direction === 'To Brodick' ? [port, 'Brodick'] : ['Brodick', port]
+  const route = routeFor(predictions.routes, port)
 
   return (
     <Page>
@@ -55,6 +58,8 @@ export function App() {
       <h2 className="crossing">
         {from} <span aria-label="to">→</span> {to}
       </h2>
+
+      {route && <ServiceStatus route={route} today={today} />}
 
       <nav className="days" aria-label="Day">
         {available.map((d) => (

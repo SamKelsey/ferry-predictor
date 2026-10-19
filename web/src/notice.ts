@@ -1,0 +1,64 @@
+import type { Port } from './predictions'
+
+export type RouteStatus = 'NORMAL' | 'BE_AWARE' | 'DISRUPTIONS' | 'ALL_SAILINGS_CANCELLED'
+
+export type Notice = {
+  title: string
+  status: RouteStatus
+  reason: string | null
+  updated_at: string
+  detail: string
+}
+
+export type Route = {
+  route: 'ARD' | 'TRO'
+  status: RouteStatus
+  notices: Notice[]
+}
+
+export type Span = { text: string; bold?: boolean; href?: string }
+
+const ROUTES: Record<Port, Route['route']> = { Ardrossan: 'ARD', Troon: 'TRO' }
+
+const LABELS: Record<RouteStatus, string> = {
+  NORMAL: 'Sailing as normal',
+  BE_AWARE: 'Be aware',
+  DISRUPTIONS: 'Disruptions',
+  ALL_SAILINGS_CANCELLED: 'All sailings cancelled',
+}
+
+// Bold text, inline links, and reference-style links whose targets CalMac doesn't send.
+const INLINE = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)\s]+)\)|\[([^\]]+)\]\[[^\]]*\]/g
+
+export function routeFor(routes: Route[] | undefined, port: Port): Route | undefined {
+  return routes?.find((r) => r.route === ROUTES[port])
+}
+
+export function label(status: RouteStatus): string {
+  return LABELS[status]
+}
+
+/** CalMac's Markdown notice as paragraphs of plain, bold and linked spans. */
+export function paragraphs(detail: string): Span[][] {
+  return detail
+    .replaceAll('\r', '')
+    .split(/\n\s*\n/)
+    .map((p) => p.replace(/\s*\n\s*/g, ' ').trim())
+    .filter(Boolean)
+    .map(spans)
+}
+
+function spans(text: string): Span[] {
+  const found: Span[] = []
+  let at = 0
+  for (const match of text.matchAll(INLINE)) {
+    if (match.index > at) found.push({ text: text.slice(at, match.index) })
+    const [, bold, linkText, href, referenced] = match
+    if (bold !== undefined) found.push({ text: bold, bold: true })
+    else if (href !== undefined && /^https?:\/\//.test(href)) found.push({ text: linkText, href })
+    else found.push({ text: linkText ?? referenced })
+    at = match.index + match[0].length
+  }
+  if (at < text.length) found.push({ text: text.slice(at) })
+  return found
+}

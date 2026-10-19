@@ -12,13 +12,15 @@ const SERVICE_STATUS = 'https://www.calmac.co.uk/service-status'
 
 export function SailingRow({ sailing, now, index, disrupted }: Props) {
   const cancelled = sailing.status === 'CANCELLED'
-  const departed = !cancelled && Date.parse(sailing.rescheduled_departs ?? sailing.departs) < now
+  const passed = !cancelled && Date.parse(sailing.rescheduled_departs ?? sailing.departs) < now
+  // On a disrupted day a sailing whose time has passed may not have left, so only CalMac can say.
+  const checkCalmac = disrupted && !cancelled
+  const departed = passed && !checkCalmac
   const chance = sailing.chance_of_sailing
-  const checkCalmac = disrupted && !cancelled && !departed
   const state = cancelled ? 'cancelled' : departed ? 'departed' : checkCalmac ? 'disrupted' : chance === null ? 'unknown' : outlook(chance)
 
   return (
-    <li className={`sailing ${state}`} style={{ '--index': index } as CSSProperties}>
+    <li className={`sailing ${state}${passed ? ' passed' : ''}`} style={{ '--index': index } as CSSProperties}>
       <div className="times">
         <span className="departs">{localTime(sailing.departs)}</span>
         <span className="arrives">arrives {localTime(sailing.arrives)}</span>

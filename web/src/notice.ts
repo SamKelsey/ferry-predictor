@@ -1,4 +1,4 @@
-import type { Port } from './predictions'
+import { localDate, type Port } from './predictions'
 
 export type RouteStatus = 'NORMAL' | 'BE_AWARE' | 'DISRUPTIONS' | 'ALL_SAILINGS_CANCELLED'
 
@@ -6,6 +6,8 @@ export type Notice = {
   title: string
   status: RouteStatus
   reason: string | null
+  starts: string
+  ends: string
   updated_at: string
   detail: string
 }
@@ -17,6 +19,8 @@ export type Route = {
 }
 
 export type Span = { text: string; bold?: boolean; href?: string }
+
+const SEVERE: RouteStatus[] = ['DISRUPTIONS', 'ALL_SAILINGS_CANCELLED']
 
 const ROUTES: Record<Port, Route['route']> = { Ardrossan: 'ARD', Troon: 'TRO' }
 
@@ -32,6 +36,16 @@ const INLINE = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)\s]+)\)|\[([^\]]+)\]\[[^\]]*\]/g
 
 export function routeFor(routes: Route[] | undefined, port: Port): Route | undefined {
   return routes?.find((r) => r.route === ROUTES[port])
+}
+
+/**
+ * Whether a disruption notice covers this departure, so the notice should be trusted over a prediction.
+ * A notice covers its whole first day, as CalMac posts them after some of that day's sailings are already affected.
+ */
+export function disrupted(route: Route | undefined, departs: string): boolean {
+  return (route?.notices ?? []).some(
+    (n) => SEVERE.includes(n.status) && localDate(n.starts) <= localDate(departs) && Date.parse(departs) < Date.parse(n.ends),
+  )
 }
 
 export function label(status: RouteStatus): string {

@@ -5,13 +5,17 @@ type Props = {
   sailing: Sailing
   now: number
   index: number
+  disrupted: boolean
 }
 
-export function SailingRow({ sailing, now, index }: Props) {
+const SERVICE_STATUS = 'https://www.calmac.co.uk/service-status'
+
+export function SailingRow({ sailing, now, index, disrupted }: Props) {
   const cancelled = sailing.status === 'CANCELLED'
   const departed = !cancelled && Date.parse(sailing.rescheduled_departs ?? sailing.departs) < now
   const chance = sailing.chance_of_sailing
-  const state = cancelled ? 'cancelled' : departed ? 'departed' : chance === null ? 'unknown' : outlook(chance)
+  const checkCalmac = disrupted && !cancelled && !departed
+  const state = cancelled ? 'cancelled' : departed ? 'departed' : checkCalmac ? 'disrupted' : chance === null ? 'unknown' : outlook(chance)
 
   return (
     <li className={`sailing ${state}`} style={{ '--index': index } as CSSProperties}>
@@ -23,7 +27,15 @@ export function SailingRow({ sailing, now, index }: Props) {
       <div className="verdict">
         {cancelled && <span className="headline">Cancelled by CalMac</span>}
         {departed && <span className="headline">Departed</span>}
-        {!cancelled && !departed && chance !== null && (
+        {checkCalmac && (
+          <span className="reading">
+            <span className="meaning">disruption on this route</span>
+            <a className="headline" href={SERVICE_STATUS}>
+              Check CalMac's status
+            </a>
+          </span>
+        )}
+        {!cancelled && !departed && !checkCalmac && chance !== null && (
           <>
             <span className="chance">{Math.round(chance * 100)}%</span>
             <span className="reading">
@@ -46,7 +58,7 @@ export function SailingRow({ sailing, now, index }: Props) {
         {!['SCHEDULED', 'CANCELLED', 'DELAYED'].includes(sailing.status) && (
           <span className="status">CalMac: {sailing.status.toLowerCase().replaceAll('_', ' ')}</span>
         )}
-        {sailing.gust_knots !== null && !cancelled && !departed && <span>Gusts {sailing.gust_knots} kn</span>}
+        {sailing.gust_knots !== null && !cancelled && !departed && !checkCalmac && <span>Gusts {sailing.gust_knots} kn</span>}
       </div>
     </li>
   )

@@ -84,6 +84,8 @@ def routes(notices: dict[str, list[calmac.Notice]], now: str) -> list[dict]:
                 'title': n.title,
                 'status': n.sub_status,
                 'reason': n.disruption_reason.strip() if n.disruption_reason else None,
+                'starts': n.starts,
+                'ends': n.ends,
                 'updated_at': n.updated_at,
                 'detail': n.detail,
             } for n in live],

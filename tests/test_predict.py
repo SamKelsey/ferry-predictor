@@ -72,5 +72,6 @@ def test_routes_take_the_worst_live_sailing_notice():
     ]
     assert rows[0]['notices'][0] == {
         'title': 'Monday 19 October', 'status': 'DISRUPTIONS', 'reason': 'Emergency',
+        'starts': '2026-10-19T05:00:00.000Z', 'ends': '2026-10-19T23:00:00.000Z',
         'updated_at': '2026-10-19T06:00:00.000Z', 'detail': 'The following sailings are **cancelled**',
     }

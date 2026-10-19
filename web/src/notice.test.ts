@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { paragraphs, routeFor, type Route } from './notice'
+import { disrupted, paragraphs, routeFor, type Notice, type Route } from './notice'
 
 describe('paragraphs', () => {
   it('splits on blank lines and keeps bold text', () => {
@@ -55,5 +55,35 @@ describe('routeFor', () => {
 
   it('is missing from older predictions files', () => {
     expect(routeFor(undefined, 'Troon')).toBeUndefined()
+  })
+})
+
+describe('disrupted', () => {
+  function notice(status: Notice['status'], starts = '2026-10-19T05:14:00.000Z', ends = '2026-10-19T23:00:00.000Z'): Notice {
+    return { title: 'Monday 19 October', status, reason: null, starts, ends, updated_at: starts, detail: '' }
+  }
+
+  function route(...notices: Notice[]): Route {
+    return { route: 'ARD', status: 'DISRUPTIONS', notices }
+  }
+
+  it.each([
+    { name: 'a sailing later that day', notices: [notice('DISRUPTIONS')], departs: '2026-10-19T11:30:00.000Z', expected: true },
+    { name: 'a sailing before the notice was posted', notices: [notice('DISRUPTIONS')], departs: '2026-10-19T05:00:00.000Z', expected: true },
+    { name: 'all sailings cancelled', notices: [notice('ALL_SAILINGS_CANCELLED')], departs: '2026-10-19T11:30:00.000Z', expected: true },
+    { name: 'a sailing the next day', notices: [notice('DISRUPTIONS')], departs: '2026-10-20T07:30:00.000Z', expected: false },
+    { name: 'a sailing the day before', notices: [notice('DISRUPTIONS')], departs: '2026-10-18T11:30:00.000Z', expected: false },
+    {
+      name: 'a long be-aware notice',
+      notices: [notice('BE_AWARE', '2026-10-17T23:00:00.000Z', '2027-01-19T00:00:00.000Z')],
+      departs: '2026-10-19T11:30:00.000Z',
+      expected: false,
+    },
+  ])('$name: $expected', ({ notices, departs, expected }) => {
+    expect(disrupted(route(...notices), departs)).toBe(expected)
+  })
+
+  it('is false without route information', () => {
+    expect(disrupted(undefined, '2026-10-19T11:30:00.000Z')).toBe(false)
   })
 })

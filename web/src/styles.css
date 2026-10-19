@@ -294,6 +294,7 @@ h1 {
 .sailing.doubtful { --tone: var(--doubtful); }
 .sailing.unlikely,
 .sailing.cancelled { --tone: var(--unlikely); }
+.sailing.disrupted { --tone: var(--doubtful); }
 .sailing.departed { opacity: 0.45; }
 
 .times {

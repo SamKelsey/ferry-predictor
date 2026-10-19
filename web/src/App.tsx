@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import mark from './mark.svg'
-import { routeFor } from './notice'
+import { disrupted, routeFor } from './notice'
 import { SailingRow } from './SailingRow'
 import { ServiceStatus } from './ServiceStatus'
 import {
@@ -78,7 +78,7 @@ export function App() {
       ) : (
         <ol className="sailings" key={`${port}-${direction}-${selected}`}>
           {sailings.map((s, i) => (
-            <SailingRow key={s.departs} sailing={s} now={now} index={i} />
+            <SailingRow key={s.departs} sailing={s} now={now} index={i} disrupted={disrupted(route, s.departs)} />
           ))}
         </ol>
       )}

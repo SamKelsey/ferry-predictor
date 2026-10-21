@@ -188,3 +188,8 @@ We are working on timetable and vessel deployment from Tuesday 19 January and wi
 2026-10-21T16:40:54+00:00,301,routestatus-9f41eb98-d178-4137-b1e1-9622af8b3621,Wednesday 21 October ,SAILING,BE_AWARE,Weather,2026-10-21T07:34:00.000Z,2026-10-21T23:00:00.000Z,2026-10-21T16:34:48.935Z,"Due to adverse weather, the 18:10 sailing departing Troon will depart on a load and go basis.
 
 Passengers are advised to arrive at the port in plenty of time for check-in."
+2026-10-21T17:01:28+00:00,003,routestatus-92c775e3-8caa-40a2-8171-72531c19bdc7,Wednesday 21 October,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-21T09:25:00.000Z,2026-10-21T23:00:00.000Z,2026-10-21T16:57:52.711Z,"Due to adverse weather and winds stronger than forecast, the following sailings are **cancelled**:
+
+**Depart** Ardrossan - 18:00
+
+**Depart** Brodick - 19:20"

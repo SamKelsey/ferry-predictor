@@ -261,3 +261,34 @@ Please monitor service status on the day of travel."
 
 Due to adverse weather conditions, timber or livestock will not be carried on any afternoon sailings."
 2026-10-23T09:10:46+00:00,301,routestatus-d9eac80d-1755-4986-b76f-a8dcd85baf1b,Saturday 24 and Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-24T08:34:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T09:02:09.519Z,"Due to adverse weather, all sailings are cancelled on this route. "
+2026-10-23T09:20:57+00:00,003,routestatus-42d2612b-e548-4de0-926e-45ed7fbe5124,Friday 23 - Saturday 24 October,SAILING,DISRUPTIONS,Weather,2026-10-22T15:10:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T09:16:47.110Z,"**Friday 23 October**
+
+Due to adverse weather forecast, MV Caledonian Isles will berth overnight in Brodick.  
+
+As a result, the 19:20 sailing departing Brodick is **cancelled.**
+
+**Saturday 24 October**
+
+Due to MV Caledonian Isles berthing overnight in Brodick, the following amended timetable will operate:
+
+**Depart** Brodick - 07:00
+
+**Depart** Ardrossan - 08:20
+
+Please note these sailings are liable to disruption or cancellation at short notice.
+
+All remaining sailings from 09:45 are **cancelled.**
+"
+2026-10-23T09:20:57+00:00,003,routestatus-d9bfdec1-7312-4834-90cb-9267db3df496,Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-25T10:16:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T09:18:16.728Z,"Due to adverse weather forecast, all sailings are **cancelled.**"
+2026-10-23T09:20:57+00:00,003,routestatus-efd6ae07-3ed7-4d9a-b570-c5283fd7065f,Monday 26 - Tuesday 27 October ,SAILING,DISRUPTIONS,,2026-10-23T09:18:00.000Z,2026-10-23T23:00:00.000Z,2026-10-23T09:20:18.253Z,"**Monday 26 October**
+
+Due to MV Caledonian Isles berthing overnight in Brodick, the 07:00 sailing departing Ardrossan is **cancelled**.  
+
+Service is expected to resume with the 08:20 sailing departing Brodick.  
+
+Please note all sailings remain liable to disruption or cancellation at short notice.
+
+**Tuesday 27 October**
+
+Due to adverse weather forecast, all sailings are liable to disruption or cancellation at short notice.
+"

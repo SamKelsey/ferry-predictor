@@ -307,3 +307,21 @@ Due to adverse weather forecast, all sailings are liable to disruption or cancel
 2026-10-23T11:10:57+00:00,003,routestatus-4c0a895b-1420-4a70-a66c-f16f828010ed,Storm Boleo,WARNING,NONE,,2026-10-22T14:49:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T11:07:31.390Z,"Due to strong winds associated with Storm Boelo, disruption is expected across our network until Sunday 25 October. We will be in touch by text and email with any impacted bookings. [Read our latest customer update and continue to check service status regularly.](https://www.calmac.co.uk/travel/latest-customer-updates/customer-update-storm-boelo-expected-weather-disruption/#/) "
 2026-10-23T11:10:57+00:00,301,routestatus-7b2e48c2-88fe-455a-bedc-9dd8ee2c1a68,Storm Boelo,WARNING,NONE,,2026-10-22T14:55:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T11:09:49.328Z,"Due to strong winds associated with Storm Boelo, disruption is expected across our network until Sunday 25 October. We will be in touch by text and email with any impacted bookings. [Read our latest customer update and continue to check service status regularly.](https://www.calmac.co.uk/travel/latest-customer-updates/customer-update-storm-boelo-expected-weather-disruption/#/) "
 2026-10-23T11:10:57+00:00,301,routestatus-d9eac80d-1755-4986-b76f-a8dcd85baf1b,Saturday 24 and Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-24T08:34:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T11:10:28.331Z,"Due to adverse weather, all sailings are **cancelled** on this route. "
+2026-10-23T11:31:09+00:00,003,routestatus-42d2612b-e548-4de0-926e-45ed7fbe5124,Friday 23 - Saturday 24 October,SAILING,DISRUPTIONS,Weather,2026-10-22T15:10:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T11:29:52.269Z,"**Friday 23 October**
+
+Due to adverse weather forecast, MV Caledonian Isles will berth overnight in Brodick.  
+
+As a result, the 19:20 sailing departing Brodick is **cancelled.**
+
+**Saturday 24 October**
+
+Due to MV Caledonian Isles berthing overnight in Brodick, the following amended timetable will operate:
+
+**Depart** Brodick - 07:00
+
+**Depart** Ardrossan - 08:20
+
+Please note these sailings are liable to disruption or cancellation at short notice.
+
+All remaining sailings from and including the 09:45 departure from Ardrossan are **cancelled.**
+"

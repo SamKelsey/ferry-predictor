@@ -351,3 +351,13 @@ Please note these sailings are liable to disruption or cancellation at short not
 
 All remaining sailings from and including the 09:45 departure from Ardrossan are **cancelled.**"
 2026-10-23T19:01:32+00:00,301,routestatus-d9eac80d-1755-4986-b76f-a8dcd85baf1b,Saturday 24 and Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-23T08:34:00.000Z,2026-10-26T00:00:00.000Z,2026-10-23T19:01:17.968Z,"Due to adverse weather, all sailings are **cancelled** on this route. "
+2026-10-24T04:10:50+00:00,003,routestatus-8dcbf9f1-9a90-44c8-a324-166f7d95e617,Saturday 24 October ,SAILING,DISRUPTIONS,Weather,2026-10-22T23:00:00.000Z,2026-10-24T23:00:00.000Z,2026-10-24T04:03:56.083Z,"Due to MV Caledonian Isles berthing overnight in Brodick, the following amended timetable will operate:
+
+**Depart** Brodick - 07:00
+
+**Depart** Ardrossan - 08:20
+
+Please note these sailings are liable to disruption or cancellation at short notice.
+
+All remaining sailings from and including the 09:45 departure from Ardrossan are **cancelled.**"
+2026-10-24T04:10:50+00:00,301,routestatus-d9eac80d-1755-4986-b76f-a8dcd85baf1b,Saturday 24 and Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-23T08:34:00.000Z,2026-10-26T00:00:00.000Z,2026-10-24T04:07:45.498Z,"Due to adverse weather, all sailings are **cancelled** on this route. "

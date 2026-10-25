@@ -421,3 +421,9 @@ Due to forecast adverse weather associated with storm Boelo, the Ardrossan Port 
 2026-10-24T17:45:17+00:00,301,routestatus-d9eac80d-1755-4986-b76f-a8dcd85baf1b,Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-23T08:34:00.000Z,2026-10-26T00:00:00.000Z,2026-10-24T17:44:43.885Z,"Due to adverse weather, all sailings are **cancelled** on this route. 
 
 The Troon port office will operate with reduced hours of 10:00 until 15:30 on Sunday 25 October. "
+2026-10-25T06:10:48+00:00,003,routestatus-d9bfdec1-7312-4834-90cb-9267db3df496,Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-24T19:00:00.000Z,2026-10-26T00:00:00.000Z,2026-10-25T06:04:30.489Z,"Due to an adverse weather forecast, all sailings are **cancelled.**
+
+Due to forecast adverse weather associated with storm Boelo, the Ardrossan Port office will open at 10:00 and close at 16:30."
+2026-10-25T06:10:48+00:00,301,routestatus-d9eac80d-1755-4986-b76f-a8dcd85baf1b,Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-23T08:34:00.000Z,2026-10-26T00:00:00.000Z,2026-10-25T06:06:10.270Z,"Due to adverse weather, all sailings are **cancelled** on this route. 
+
+The Troon port office will operate with reduced hours of 10:00 until 15:30 on Sunday 25 October. "

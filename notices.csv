@@ -436,3 +436,19 @@ Due to forecast adverse weather associated with storm Boelo, the Ardrossan Port 
 2026-10-25T11:31:08+00:00,301,routestatus-d9eac80d-1755-4986-b76f-a8dcd85baf1b,Sunday 25 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-23T08:34:00.000Z,2026-10-26T00:00:00.000Z,2026-10-25T11:26:14.743Z,"Due to adverse weather, all sailings are **cancelled** on this route. 
 
 The Troon port office will operate with reduced hours of 10:00 until 12:00."
+2026-10-25T16:50:55+00:00,003,routestatus-1d8b9fca-d0dc-4387-ba89-cdd66740ce5d,Tuesday 27 October ,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-10-26T19:45:00.000Z,2026-10-28T00:00:00.000Z,2026-10-25T16:47:20.061Z,"Due to an adverse weather forecast, this service is **cancelled.**"
+2026-10-25T16:50:55+00:00,003,routestatus-ecfb4902-f483-4d05-81ea-f6b0f4413d8e,Wednesday 28 October ,SAILING,BE_AWARE,Weather,2026-10-27T19:50:00.000Z,2026-10-29T00:00:00.000Z,2026-10-25T16:48:53.938Z,"Due to adverse weather forecast, this service is liable to disruption or cancellation at short notice.
+
+No livestock will be carried, and timber will be carried on a case-by-case basis.
+"
+2026-10-25T16:50:55+00:00,003,routestatus-efd6ae07-3ed7-4d9a-b570-c5283fd7065f,Monday 26 October ,SAILING,DISRUPTIONS,Weather,2026-10-26T10:18:00.000Z,2026-10-27T00:00:00.000Z,2026-10-25T16:45:30.063Z,"**Monday 26 October**
+
+Due to MV Caledonian Isles berthing overnight in Brodick, the 07:00 sailing departing Ardrossan is **cancelled.**
+
+Service is expected to resume with the 08:20 sailing departing Brodick.
+
+All sailings are liable to disruption or cancellation at short notice, with sailings from 11:05 at a heightened risk of disruption.
+
+No livestock will be carried, and timber will be carried on a case-by-case basis.
+
+"

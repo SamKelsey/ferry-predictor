@@ -6,7 +6,7 @@ This is an unofficial project, not affiliated with CalMac. Always check [CalMac'
 
 ## How it works
 
-- `ferry.poll` runs every 10 minutes on GitHub Actions. It records the status of every sailing in the next eight days, each route's service notices and the vessels assigned to each route. Only changes are written, as rows appended to CSV files on the [`data`](../../tree/data) branch.
+- `ferry.poll` runs every 10 minutes on GitHub Actions. It records the status of every sailing in the next eight days, each route's service notices and the vessels assigned to each route. Only changes are written, as rows appended to CSV files on the [`data`](../../tree/data) branch. CalMac drops a cancelled sailing from its timetable rather than marking it cancelled, so when a sailing it was listing disappears before its day is over, the poll logs it with the status `REMOVED`.
 - `ferry.predict` takes the next eight days of sailings from CalMac and the latest GFS forecast from [Open-Meteo](https://open-meteo.com/), and writes each sailing's chance of sailing to `predictions.json`. Sailings CalMac has already cancelled get no prediction.
 - The site in `web/` is a static React page that reads `predictions.json`. The publish workflow regenerates the predictions and redeploys it to GitHub Pages every hour.
 - Each time the publish workflow regenerates the predictions, it also appends any that changed to `predictions.csv` on the `data` branch, with each sailing's days ahead and the model that scored it, so they can later be checked against what actually sailed.
@@ -56,7 +56,7 @@ git worktree add data data
 .venv/bin/python -m ferry.score data
 ```
 
-For each sailing that has departed, it takes the latest prediction made before departure at each number of days ahead, and counts the sailing as cancelled if its latest status is `CANCELLED`. It prints AUC, Brier score and predicted against actual cancellation rate for each number of days ahead, comparable with the table above, then how often sailings in each ten-point chance band actually sailed.
+For each sailing that has departed, it takes the latest prediction made before departure at each number of days ahead, and counts the sailing as cancelled if its latest status is `CANCELLED` or `REMOVED`. It prints AUC, Brier score and predicted against actual cancellation rate for each number of days ahead, comparable with the table above, then how often sailings in each ten-point chance band actually sailed.
 
 Retrain, given CalMac's FOI 4377 CSV:
 

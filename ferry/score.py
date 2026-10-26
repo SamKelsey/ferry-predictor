@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import brier_score_loss, roc_auc_score
 
+from ferry import poll
+
 SAILING = ['origin', 'destination', 'departs']
 
 
@@ -34,7 +36,7 @@ def scored(predictions: pd.DataFrame, sailings: pd.DataFrame, now: pd.Timestamp)
     latest = predictions.sort_values('made_at').groupby([*SAILING, 'days_ahead']).tail(1)
 
     final = sailings.assign(seen_at=pd.to_datetime(sailings.observed_at, utc=True)).sort_values('seen_at').groupby(SAILING).tail(1)
-    final = final[pd.to_datetime(final.departs, utc=True) < now].assign(cancelled=final.status.eq('CANCELLED'))
+    final = final[pd.to_datetime(final.departs, utc=True) < now].assign(cancelled=final.status.isin(['CANCELLED', poll.REMOVED]))
 
     table = latest.merge(final[[*SAILING, 'cancelled']], on=SAILING)
     return table[[*SAILING, 'days_ahead', 'chance_of_sailing', 'cancelled']].sort_values([*SAILING, 'days_ahead']).reset_index(drop=True)

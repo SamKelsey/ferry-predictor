@@ -124,4 +124,4 @@ def test_dropped_uses_the_latest_logged_timetable():
     pytest.param('2026-10-26T13:00:00.000Z', '2026-10-27T00:00:00.000Z', '2026-10-26', True, id='posted in the afternoon'),
 ])
 def test_covers_only_counts_sailing_hours(starts, ends, day, expected):
-    assert predict.covers(notice('ALL_SAILINGS_CANCELLED', starts=starts, ends=ends), day) is expected
+    assert calmac.covers(notice('ALL_SAILINGS_CANCELLED', starts=starts, ends=ends), day) is expected

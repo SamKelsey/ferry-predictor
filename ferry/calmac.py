@@ -1,10 +1,15 @@
 from dataclasses import dataclass
 from datetime import date
 
+import pandas as pd
 import requests
 
 URL = 'https://apim.calmac.co.uk/graphql'
 HEADERS = {'User-Agent': 'ferry-predictor (+https://github.com/SamKelsey/ferry-predictor)'}
+
+# Roughly when the ferries run. A notice only covers a day if it's up during these hours, as CalMac often
+# posts the next day's notice the evening before, after the last sailing.
+SAILING_HOURS = ('06:00', '19:00')
 
 SAILINGS_QUERY = """
 query ($origin: String, $destination: String, $start: Date, $end: Date) {
@@ -118,6 +123,16 @@ def route(code: str) -> Route:
         ],
         vessels=[v['name'] for v in r['vessels']],
     )
+
+
+def covers(notice: Notice, day: str) -> bool:
+    """Whether a notice is up during the sailing hours of a UK date."""
+    first, last = SAILING_HOURS
+    return _local(notice.starts) < f'{day} {last}' and _local(notice.ends) > f'{day} {first}'
+
+
+def _local(instant: str) -> str:
+    return pd.Timestamp(instant).tz_convert('Europe/London').strftime('%Y-%m-%d %H:%M')
 
 
 def _query(text: str, variables: dict[str, str]) -> dict:

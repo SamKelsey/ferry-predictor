@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from ferry import history
 from ferry.openmeteo import POINTS
 
 
@@ -21,9 +22,13 @@ def timetable(sailings: pd.DataFrame) -> pd.DataFrame:
     return s
 
 
-def build(hourly: pd.DataFrame, sailings: pd.DataFrame) -> pd.DataFrame:
-    """The model's features for each sailing in a `timetable`, from `local` hourly weather."""
-    return pd.concat([weather(hourly, sailings), schedule(sailings)], axis=1)
+def build(hourly: pd.DataFrame, sailings: pd.DataFrame, outcomes: pd.DataFrame, days_ahead: np.ndarray | int) -> pd.DataFrame:
+    """
+    The model's features for each sailing in a `timetable`: `local` hourly weather, its place in the timetable, and its route's
+    recent cancellations in `history.observed` outcomes, up to the day before a forecast made `days_ahead` days before it.
+    """
+    days_before = np.maximum(days_ahead, 1)
+    return pd.concat([weather(hourly, sailings), schedule(sailings), history.cancellations(sailings, outcomes, days_before)], axis=1)
 
 
 def weather(hourly: pd.DataFrame, sailings: pd.DataFrame) -> pd.DataFrame:

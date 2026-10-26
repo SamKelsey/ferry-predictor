@@ -12,7 +12,8 @@ MAX_LEAD = 7
 
 @dataclass(frozen=True)
 class Model:
-    classifier: HistGradientBoostingClassifier
+    """A classifier and a calibration for each number of days ahead, as each sees a different stretch of recent cancellations."""
+    classifiers: dict[int, HistGradientBoostingClassifier]
     calibrations: dict[int, LogisticRegression]
 
 
@@ -29,13 +30,13 @@ def calibration(scores: np.ndarray, cancelled: pd.Series) -> LogisticRegression:
 
 def risk(model: Model, features: pd.DataFrame, leads: np.ndarray) -> np.ndarray:
     """The chance each sailing is cancelled, calibrated for how many days ahead its forecast was made, never fully certain."""
-    scores = model.classifier.predict_proba(features)[:, 1]
     leads = np.clip(leads, 0, MAX_LEAD)
-    calibrated = np.empty(len(scores))
+    calibrated = np.empty(len(leads))
     for lead, calibration_for_lead in model.calibrations.items():
         rows = leads == lead
         if rows.any():
-            calibrated[rows] = calibration_for_lead.predict_proba(_logit(scores[rows]))[:, 1]
+            scores = model.classifiers[lead].predict_proba(features[rows])[:, 1]
+            calibrated[rows] = calibration_for_lead.predict_proba(_logit(scores))[:, 1]
     return np.clip(calibrated, 0.01, 0.99)
 
 

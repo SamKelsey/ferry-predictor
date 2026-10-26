@@ -492,6 +492,15 @@ h1 {
   cursor: pointer;
 }
 
+.deep-dive {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  font: 500 0.7rem var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .switch input {
   position: absolute;
   opacity: 0;
@@ -636,7 +645,8 @@ h1 {
   height: 100%;
 }
 
-.history-plot svg {
+.history-grid,
+.history-lines svg {
   display: block;
   width: 100%;
   height: 100%;

@@ -60,17 +60,6 @@ export function App() {
       <nav className="controls" aria-label="Route">
         <Choice label="Which way?" options={DIRECTIONS} value={direction} onChange={setDirection} />
         <Choice label={direction === 'To Brodick' ? 'Sailing from' : 'Sailing to'} options={PORTS} value={port} onChange={setPort} />
-        <div className="step">
-          <span className="step-label" id="deep-dive-label">Deep dive</span>
-          <label className="switch">
-            <input type="checkbox" aria-labelledby="deep-dive-label" checked={deepDive} onChange={(e) => setDeepDive(remember(e.target.checked))} />
-            <span className="knob" aria-hidden="true">
-              <span className="puck">
-                <Anchor />
-              </span>
-            </span>
-          </label>
-        </div>
       </nav>
 
       <h2 className="crossing">
@@ -86,6 +75,16 @@ export function App() {
           </button>
         ))}
       </nav>
+
+      <label className="switch deep-dive">
+        Deep dive
+        <input type="checkbox" checked={deepDive} onChange={(e) => setDeepDive(remember(e.target.checked))} />
+        <span className="knob" aria-hidden="true">
+          <span className="puck">
+            <Anchor />
+          </span>
+        </span>
+      </label>
 
       {ahead >= UNCERTAIN_FROM_DAYS && (
         <p className="caution">This is {ahead} days away, so the weather could still change a lot. Check back nearer the day.</p>

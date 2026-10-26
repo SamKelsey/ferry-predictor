@@ -70,6 +70,7 @@ describe('routeOn', () => {
       notice('DISRUPTIONS', '2026-10-19T06:06:00.000Z', '2026-10-19T23:00:00.000Z'),
       notice('BE_AWARE', '2026-10-17T23:00:00.000Z', '2027-01-19T00:00:00.000Z'),
       notice('ALL_SAILINGS_CANCELLED', '2026-10-20T23:00:00.000Z', '2026-10-22T23:00:00.000Z'),
+      { ...notice('ALL_SAILINGS_CANCELLED', '2026-10-26T19:45:00.000Z', '2026-10-28T00:00:00.000Z'), title: 'next day, posted the evening before' },
     ],
   }
 
@@ -80,6 +81,8 @@ describe('routeOn', () => {
     { day: '2026-10-21', status: 'ALL_SAILINGS_CANCELLED', titles: ['ALL_SAILINGS_CANCELLED'] },
     { day: '2026-10-22', status: 'ALL_SAILINGS_CANCELLED', titles: ['ALL_SAILINGS_CANCELLED'] },
     { day: '2026-10-23', status: 'NORMAL', titles: [] },
+    { day: '2026-10-26', status: 'NORMAL', titles: [] },
+    { day: '2026-10-27', status: 'ALL_SAILINGS_CANCELLED', titles: ['next day, posted the evening before'] },
   ])('$day is $status', ({ day, status, titles }) => {
     const on = routeOn(route, day)
     expect(on?.status).toBe(status)

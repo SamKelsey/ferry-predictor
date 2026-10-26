@@ -1,4 +1,4 @@
-import { localDate, type Port } from './predictions'
+import { localStamp, type Port } from './predictions'
 
 export type RouteStatus = 'NORMAL' | 'BE_AWARE' | 'DISRUPTIONS' | 'ALL_SAILINGS_CANCELLED'
 
@@ -22,6 +22,9 @@ export type Span = { text: string; bold?: boolean; href?: string }
 
 const ORDER: RouteStatus[] = ['NORMAL', 'BE_AWARE', 'DISRUPTIONS', 'ALL_SAILINGS_CANCELLED']
 const SEVERE = ORDER.slice(2)
+// Roughly when the ferries run, matching ferry.predict.SAILING_HOURS. A notice only covers a day if it's up during
+// these hours, as CalMac often posts the next day's notice the evening before, after the last sailing.
+const [FIRST_SAILING, LAST_SAILING] = ['06:00', '19:00']
 
 const ROUTES: Record<Port, Route['route']> = { Ardrossan: 'ARD', Troon: 'TRO' }
 
@@ -46,7 +49,7 @@ export function routeFor(routes: Route[] | undefined, port: Port): Route | undef
 export function routeOn(route: Route | undefined, day: string): Route | undefined {
   if (!route) return undefined
   const notices = route.notices.filter(
-    (n) => SEVERE.includes(n.status) && localDate(n.starts) <= day && day <= localDate(Date.parse(n.ends) - 1),
+    (n) => SEVERE.includes(n.status) && localStamp(n.starts) < `${day} ${LAST_SAILING}` && localStamp(n.ends) > `${day} ${FIRST_SAILING}`,
   )
   const status = notices.reduce<RouteStatus>((worst, n) => (ORDER.indexOf(n.status) > ORDER.indexOf(worst) ? n.status : worst), 'NORMAL')
   return { ...route, status, notices }

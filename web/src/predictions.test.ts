@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dayLabel, days, localDate, localTime, onRoute, outlook, type Sailing } from './predictions'
+import { chartRange, dailyPercentiles, dayLabel, days, localDate, localTime, onRoute, outlook, type Sailing } from './predictions'
 
 function sailing(origin: string, destination: string, departs = '2026-10-18T09:15:00.000Z'): Sailing {
   return {
@@ -79,5 +79,32 @@ describe('outlook', () => {
     { chance: 0.39, expected: 'unlikely' },
   ])('$chance is $expected', ({ chance, expected }) => {
     expect(outlook(chance)).toBe(expected)
+  })
+})
+
+describe('dailyPercentiles', () => {
+  it('gives each day\'s 10th, 50th and 90th percentiles of its hourly forecasts', () => {
+    const [day] = dailyPercentiles([{ date: '2026-10-28', chances: [0.9, 0.5, 0.6, 0.7, 0.8, 0.4] }])
+
+    expect(day.date).toBe('2026-10-28')
+    expect(day.p10).toBeCloseTo(0.45)
+    expect(day.p50).toBeCloseTo(0.65)
+    expect(day.p90).toBeCloseTo(0.85)
+  })
+
+  it('handles a day with a single forecast', () => {
+    expect(dailyPercentiles([{ date: '2026-10-28', chances: [0.7] }])).toEqual([{ date: '2026-10-28', p10: 0.7, p50: 0.7, p90: 0.7 }])
+  })
+})
+
+describe('chartRange', () => {
+  it.each([
+    { name: 'pads out to the next 10% and a bit', chances: [0.62, 0.88], expected: [0.5, 1] },
+    { name: 'stays within 0–100%', chances: [0.03, 0.97], expected: [0, 1] },
+    { name: 'a steady sailing still gets some room', chances: [0.9, 0.91], expected: [0.8, 1] },
+  ])('$name', ({ chances, expected }) => {
+    const [low, high] = chartRange(chances)
+    expect(low).toBeCloseTo(expected[0])
+    expect(high).toBeCloseTo(expected[1])
   })
 })

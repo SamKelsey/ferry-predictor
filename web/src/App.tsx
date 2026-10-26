@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import mark from './mark.svg'
 import { routeFor, routeOn } from './notice'
+import { FerryDrawing } from './Ferry'
 import { SailingRow } from './SailingRow'
 import { ServiceStatus } from './ServiceStatus'
 import {
@@ -21,6 +22,7 @@ const UNCERTAIN_FROM_DAYS = 3
 const EMAIL = 'samjkelsey1@gmail.com'
 const COPIED_FOR_MS = 2000
 const SERVICE_STATUS = 'https://www.calmac.co.uk/service-status'
+const DEEP_DIVE_KEY = 'ferry-likely.deep-dive'
 
 export function App() {
   const [predictions, setPredictions] = useState<Predictions | null>(null)
@@ -28,6 +30,7 @@ export function App() {
   const [port, setPort] = useState<Port>('Troon')
   const [direction, setDirection] = useState<Direction>('To Brodick')
   const [day, setDay] = useState<string | null>(null)
+  const [deepDive, setDeepDive] = useState(remembered)
 
   useEffect(() => {
     load().then(setPredictions, () => setFailed(true))
@@ -57,6 +60,17 @@ export function App() {
       <nav className="controls" aria-label="Route">
         <Choice label="Which way?" options={DIRECTIONS} value={direction} onChange={setDirection} />
         <Choice label={direction === 'To Brodick' ? 'Sailing from' : 'Sailing to'} options={PORTS} value={port} onChange={setPort} />
+        <div className="step">
+          <span className="step-label" id="deep-dive-label">Deep dive</span>
+          <label className="switch">
+            <input type="checkbox" aria-labelledby="deep-dive-label" checked={deepDive} onChange={(e) => setDeepDive(remember(e.target.checked))} />
+            <span className="knob" aria-hidden="true">
+              <span className="puck">
+                <Anchor />
+              </span>
+            </span>
+          </label>
+        </div>
       </nav>
 
       <h2 className="crossing">
@@ -77,6 +91,15 @@ export function App() {
         <p className="caution">This is {ahead} days away, so the weather could still change a lot. Check back nearer the day.</p>
       )}
 
+      {deepDive && (
+        <div className="history-key">
+          <p>How our forecast for each sailing has changed. We update it every hour, so each day has a spread:</p>
+          <span><i />typical forecast that day</span>
+          <span><i className="edge" />where 8 in 10 of them landed</span>
+          <span><FerryDrawing width={22} height={12} />forecast now</span>
+        </div>
+      )}
+
       {disrupted && sailings.some((s) => s.status !== 'CANCELLED') && (
         <p className={`disruption-note${paused ? ' paused' : ''}`}>
           <span>{paused ? 'Predictions paused due to disruption' : 'Disruption noted for this day, so double-check'}</span>
@@ -89,12 +112,40 @@ export function App() {
       ) : (
         <ol className="sailings" key={`${port}-${direction}-${selected}`}>
           {sailings.map((s, i) => (
-            <SailingRow key={s.departs} sailing={s} now={now} index={i} disrupted={paused} />
+            <SailingRow key={s.departs} sailing={s} now={now} today={today} index={i} disrupted={paused} deepDive={deepDive} />
           ))}
         </ol>
       )}
     </Page>
   )
+}
+
+/** The anchor on the Deep dive switch. */
+function Anchor() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="5.1" r="2.2" />
+      <path d="M12 7.3V21M7.5 10.8h9M4 14c.6 4 3.9 7 8 7s7.4-3 8-7M4 14l-1.6 1.8M20 14l1.6 1.8" />
+    </svg>
+  )
+}
+
+/** Whether this visitor last turned Deep dive on. Storage can be blocked, so it falls back to off. */
+function remembered(): boolean {
+  try {
+    return localStorage.getItem(DEEP_DIVE_KEY) === 'on'
+  } catch {
+    return false
+  }
+}
+
+function remember(on: boolean): boolean {
+  try {
+    localStorage.setItem(DEEP_DIVE_KEY, on ? 'on' : 'off')
+  } catch {
+    // Not remembered across visits, but still applies now.
+  }
+  return on
 }
 
 function Page({ children }: { children: ReactNode }) {

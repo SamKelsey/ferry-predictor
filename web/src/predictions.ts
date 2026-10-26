@@ -9,6 +9,13 @@ export type Sailing = {
   status: string
   gust_knots: number | null
   chance_of_sailing: number | null
+  /** The chance the page showed at the end of every hour, grouped by day, oldest first, up to now. */
+  history?: DayOfForecasts[]
+}
+
+export type DayOfForecasts = {
+  date: string
+  chances: number[]
 }
 
 export type Predictions = {
@@ -75,4 +82,33 @@ export function outlook(chance: number): Outlook {
   if (chance >= 0.5) return 'possible'
   if (chance >= 0.4) return 'doubtful'
   return 'unlikely'
+}
+
+export type DayPercentiles = {
+  date: string
+  p10: number
+  p50: number
+  p90: number
+}
+
+/** Each day's 10th, 50th and 90th percentiles of its hourly forecasts, interpolating between them. */
+export function dailyPercentiles(history: DayOfForecasts[]): DayPercentiles[] {
+  return history.map(({ date, chances }) => {
+    const sorted = [...chances].sort((a, b) => a - b)
+    return { date, p10: percentile(sorted, 0.1), p50: percentile(sorted, 0.5), p90: percentile(sorted, 0.9) }
+  })
+}
+
+function percentile(sorted: number[], q: number): number {
+  const at = (sorted.length - 1) * q
+  const below = Math.floor(at)
+  const above = Math.ceil(at)
+  return sorted[below] + (sorted[above] - sorted[below]) * (at - below)
+}
+
+/** A chart range around some chances: out to the next 10% either side, plus 10% of room, within 0–100%. */
+export function chartRange(chances: number[]): [number, number] {
+  const low = Math.max(0, Math.floor(Math.min(...chances) * 10) / 10 - 0.1)
+  const high = Math.min(1, Math.ceil(Math.max(...chances) * 10) / 10 + 0.1)
+  return [low, high]
 }

@@ -9,30 +9,29 @@ from zoneinfo import ZoneInfo
 import numpy as np
 import pandas as pd
 
-from ferry import calmac, features, logbook, model, openmeteo
+from ferry import calmac, features, history, logbook, model, openmeteo
 from ferry.routes import PORT_PAIRS, ROUTE_CODES
 
 DAYS_AHEAD = 8
 LOG_KEY = ('origin', 'destination', 'departs')
 SEVERITY = ['NORMAL', 'BE_AWARE', 'DISRUPTIONS', 'ALL_SAILINGS_CANCELLED']
-# Roughly when the ferries run. A notice only covers a day if it's up during these hours, as CalMac often
-# posts the next day's notice the evening before, after the last sailing.
-SAILING_HOURS = ('06:00', '19:00')
 
 
-def main(model_path: Path, out_path: Path, log_path: Path | None, timetable_path: Path | None = None) -> None:
+def main(model_path: Path, out_path: Path, log_path: Path | None, data_dir: Path | None = None) -> None:
+    """Predicts the next days' sailings into `out_path`, learning recent cancellations from the poll's logs in `data_dir` if given."""
     generated_at = datetime.now(timezone.utc).isoformat(timespec='seconds')
     today = datetime.now(ZoneInfo('Europe/London')).date()
     end = today + timedelta(days=DAYS_AHEAD)
     notices = {code: calmac.route(code).notices for code in ROUTE_CODES}
     found = [s for origin, destination in PORT_PAIRS for s in calmac.sailings(origin, destination, today, end)]
-    if timetable_path:
-        found += dropped(logbook.read(timetable_path), found, notices, today, end)
+    logged_sailings = logbook.read(data_dir / 'sailings.csv') if data_dir else []
+    logged_notices = logbook.read(data_dir / 'notices.csv') if data_dir else []
+    found += dropped(logged_sailings, found, notices, today, end)
     sailings = features.timetable(frame(found))
     hourly = features.local(openmeteo.forecast(today - timedelta(days=1), end))
-    X = features.build(hourly, sailings)
-
     leads = (sailings.date - pd.Timestamp(today)).dt.days.to_numpy()
+    X = features.build(hourly, sailings, history.observed(logged_sailings, logged_notices, today.isoformat()), leads)
+
     risk = model.risk(model.load(model_path), X, leads)
 
     rows = entries(sailings, X.port_gust_window, risk)
@@ -77,7 +76,7 @@ def dropped(logged: list[logbook.Row], found: list[calmac.Sailing], notices: dic
 def _days(notice: calmac.Notice, today: date, end: date) -> list[str]:
     """The UK dates from `today` up to `end` that a notice covers."""
     days = [d.date().isoformat() for d in pd.date_range(today, end - timedelta(days=1))]
-    return [d for d in days if covers(notice, d)]
+    return [d for d in days if calmac.covers(notice, d)]
 
 
 def frame(found: list[calmac.Sailing]) -> pd.DataFrame:
@@ -132,16 +131,6 @@ def routes(notices: dict[str, list[calmac.Notice]], now: str) -> list[dict]:
             } for n in live],
         })
     return rows
-
-
-def covers(notice: calmac.Notice, day: str) -> bool:
-    """Whether a notice is up during the sailing hours of a UK date."""
-    first, last = SAILING_HOURS
-    return _local(notice.starts) < f'{day} {last}' and _local(notice.ends) > f'{day} {first}'
-
-
-def _local(instant: str) -> str:
-    return pd.Timestamp(instant).tz_convert('Europe/London').strftime('%Y-%m-%d %H:%M')
 
 
 def log_rows(entries: list[dict], today: date, model_sha256: str) -> list[logbook.Row]:

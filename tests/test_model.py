@@ -12,7 +12,7 @@ class Fixed:
         return np.column_stack([1 - np.full(len(rows), self.value), np.full(len(rows), self.value)])
 
 
-CALIBRATED = model.Model(classifier=Fixed(0.5), calibrations={lead: Fixed(lead / 10) for lead in range(model.MAX_LEAD + 1)})
+CALIBRATED = model.Model(classifiers={lead: Fixed(0.5) for lead in range(model.MAX_LEAD + 1)}, calibrations={lead: Fixed(lead / 10) for lead in range(model.MAX_LEAD + 1)})
 
 
 @pytest.mark.parametrize('leads, expected', [

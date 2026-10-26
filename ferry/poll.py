@@ -3,7 +3,9 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from ferry import calmac, logbook
+import requests
+
+from ferry import calmac, logbook, metoffice
 from ferry.routes import PORT_PAIRS, ROUTE_CODES
 DAYS_WATCHED = 8
 SAILING_KEY = ('route_code', 'origin', 'destination', 'departs')
@@ -26,6 +28,12 @@ def main(data_dir: Path) -> None:
         'notices': logbook.record(data_dir / 'notices.csv', notices, ('route_code', 'id'), observed_at),
         'vessels': logbook.record(data_dir / 'vessels.csv', vessels, ('route_code',), observed_at),
     }
+    # The Met Office feed is extra, so if it's down the CalMac logs above still get written.
+    try:
+        warnings = [logbook.row(w) for w in metoffice.warnings()]
+        logged['warnings'] = logbook.record(data_dir / 'warnings.csv', warnings, ('id',), observed_at)
+    except requests.RequestException as error:
+        print(f'Met Office warnings unavailable: {error}')
     print(f'{observed_at}: saw {len(sailings)} sailings ({len(gone)} newly removed) and {len(notices)} notices, logged changes {logged}')
 
 

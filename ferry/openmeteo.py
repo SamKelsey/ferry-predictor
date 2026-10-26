@@ -39,7 +39,7 @@ def _years(start: date, end: date) -> list[tuple[date, date]]:
 def _hourly(url: str, variables: list[str], start: date, end: date) -> pd.DataFrame:
     frames = []
     for name, (latitude, longitude) in POINTS.items():
-        body = _get(url, {
+        body = get(url, {
             'latitude': latitude,
             'longitude': longitude,
             'hourly': ','.join(variables),
@@ -55,7 +55,7 @@ def _hourly(url: str, variables: list[str], start: date, end: date) -> pd.DataFr
     return pd.concat(frames, axis=1)
 
 
-def _get(url: str, params: dict[str, object], attempts: int = 5) -> dict:
+def get(url: str, params: dict[str, object], attempts: int = 5) -> dict:
     for attempt in range(attempts):
         body = requests.get(url, params=params, timeout=240).json()
         if 'hourly' in body:

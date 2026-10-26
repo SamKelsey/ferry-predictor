@@ -2,7 +2,8 @@ import hashlib
 import json
 import sys
 from dataclasses import asdict
-from datetime import date, datetime, timedelta, timezone
+from bisect import bisect_right
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -13,6 +14,8 @@ from ferry import calmac, features, history, logbook, model, openmeteo
 from ferry.routes import PORT_PAIRS, ROUTE_CODES
 
 DAYS_AHEAD = 8
+# How many days before today the page gets each sailing's hourly predictions for, to chart how they moved.
+HISTORY_DAYS = 7
 LOG_KEY = ('origin', 'destination', 'departs')
 SEVERITY = ['NORMAL', 'BE_AWARE', 'DISRUPTIONS', 'ALL_SAILINGS_CANCELLED']
 
@@ -35,12 +38,15 @@ def main(model_path: Path, out_path: Path, log_path: Path | None, data_dir: Path
     risk = model.risk(model.load(model_path), X, leads)
 
     rows = entries(sailings, X.port_gust_window, risk)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps({'generated_at': generated_at, 'sailings': rows, 'routes': routes(notices, generated_at)}, indent=1))
-
+    # Logged first, so the history includes the predictions being published now.
     if log_path:
         model_sha256 = hashlib.sha256(model_path.read_bytes()).hexdigest()[:12]
         logbook.record(log_path, log_rows(rows, today, model_sha256), LOG_KEY, generated_at)
+    earlier = hourly_history(logbook.read(log_path), datetime.fromisoformat(generated_at)) if log_path else {}
+    for row in rows:
+        row['history'] = earlier.get(tuple(row[k] for k in LOG_KEY), [])
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps({'generated_at': generated_at, 'sailings': rows, 'routes': routes(notices, generated_at)}, indent=1))
 
 
 def dropped(logged: list[logbook.Row], found: list[calmac.Sailing], notices: dict[str, list[calmac.Notice]], today: date, end: date) -> list[calmac.Sailing]:
@@ -91,6 +97,36 @@ def frame(found: list[calmac.Sailing]) -> pd.DataFrame:
         from_brodick=table.origin.eq('Brodick').astype(int),
         passage_mins=(pd.to_datetime(table.arrives, utc=True) - departs).dt.total_seconds() / 60,
     )
+
+
+def hourly_history(logged: list[logbook.Row], now: datetime) -> dict[tuple[str, ...], list[dict]]:
+    """
+    Each logged sailing's chance of sailing as the page showed it at the end of every UK hour, from `HISTORY_DAYS` days
+    before `now` up to `now`, grouped by day, oldest first. The log only gains a row when a prediction changes, so each hour
+    takes the latest row up to its end. Hours before the sailing was first predicted, or after CalMac cancelled it, are skipped.
+    """
+    uk = ZoneInfo('Europe/London')
+    today = now.astimezone(uk).date()
+    days = [today - timedelta(days=n) for n in range(HISTORY_DAYS, -1, -1)]
+    by_sailing: dict[tuple[str, ...], list[logbook.Row]] = {}
+    for r in sorted(logged, key=lambda r: r['observed_at']):
+        by_sailing.setdefault(tuple(r[k] for k in LOG_KEY), []).append(r)
+    history = {}
+    for key, rows in by_sailing.items():
+        made = [datetime.fromisoformat(r['observed_at']) for r in rows]
+        sailing_days = []
+        for day in days:
+            chances = []
+            for hour in range(24):
+                if datetime.combine(day, time(hour), uk) > now:
+                    break
+                shown = bisect_right(made, min(datetime.combine(day, time(hour, 59, 59), uk), now)) - 1
+                if shown >= 0 and rows[shown]['chance_of_sailing']:
+                    chances.append(float(rows[shown]['chance_of_sailing']))
+            if chances:
+                sailing_days.append({'date': day.isoformat(), 'chances': chances})
+        history[key] = sailing_days
+    return history
 
 
 def entries(sailings: pd.DataFrame, gusts: pd.Series, risk: np.ndarray) -> list[dict]:

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timezone
 
 import numpy as np
 import pandas as pd
@@ -125,3 +125,24 @@ def test_dropped_uses_the_latest_logged_timetable():
 ])
 def test_covers_only_counts_sailing_hours(starts, ends, day, expected):
     assert calmac.covers(notice('ALL_SAILINGS_CANCELLED', starts=starts, ends=ends), day) is expected
+
+
+def logged_prediction(observed_at: str, chance: str, departs: str = '2026-10-28T09:45:00.000Z') -> dict:
+    return {'observed_at': observed_at, 'origin': 'Ardrossan', 'destination': 'Brodick', 'departs': departs, 'days_ahead': '1',
+            'status': 'SCHEDULED', 'gust_knots': '30', 'chance_of_sailing': chance, 'model_sha256': 'abc'}
+
+
+def test_hourly_history_gives_the_chance_shown_at_the_end_of_each_hour_by_day():
+    logged = [
+        logged_prediction('2026-10-26T21:30:00+00:00', '0.9'),
+        logged_prediction('2026-10-26T22:10:00+00:00', '0.8'),
+        logged_prediction('2026-10-27T01:30:00+00:00', ''),
+        logged_prediction('2026-10-27T02:20:00+00:00', '0.6'),
+    ]
+
+    history = predict.hourly_history(logged, datetime(2026, 10, 27, 3, 5, tzinfo=timezone.utc))
+
+    assert history[('Ardrossan', 'Brodick', '2026-10-28T09:45:00.000Z')] == [
+        {'date': '2026-10-26', 'chances': [0.9, 0.8, 0.8]},
+        {'date': '2026-10-27', 'chances': [0.8, 0.6, 0.6]},
+    ]

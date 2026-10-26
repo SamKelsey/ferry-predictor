@@ -11,6 +11,10 @@
   --possible: #e2b94b;
   --doubtful: #ef8a4f;
   --unlikely: #f27272;
+  --calmac-black: #15191d;
+  --calmac-white: #f6f3ea;
+  --calmac-red: #d42a2f;
+  --calmac-yellow: #f6c31b;
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --settle: cubic-bezier(0.2, 0.7, 0.2, 1);
   --serif: 'Young Serif', Georgia, serif;
@@ -413,22 +417,32 @@ h1 {
 }
 
 .track {
+  --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 10'%3E%3Cpath d='M0 5 Q11 2 22 5 T44 5' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  --sail-for: 1.4s;
+  --sail-delay: calc(var(--index) * 45ms + 0.1s);
   position: relative;
   grid-column: 1 / -1;
-  height: 8px;
-  margin: 0.75rem 0 0.35rem;
-  border-radius: 4px;
+  height: 10px;
+  margin: 1rem 0 0.35rem;
+}
+
+.sea,
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  mask: var(--wave) 0 50% / 44px 10px repeat-x;
+}
+
+.sea {
+  right: 0;
   background: var(--rule);
 }
 
 .fill {
-  position: absolute;
-  inset: 0 auto 0 0;
   width: var(--chance);
-  border-radius: inherit;
   background: var(--tone);
-  animation: fill 0.7s var(--settle) both;
-  animation-delay: calc(var(--index) * 45ms + 0.1s);
+  animation: fill var(--sail-for) var(--settle) both;
+  animation-delay: var(--sail-delay);
 }
 
 .marker {
@@ -437,27 +451,48 @@ h1 {
   left: var(--chance);
   display: block;
   line-height: 0;
-  transform: translate(-50%, -80%);
-  animation: sail 0.7s var(--settle) both;
-  animation-delay: calc(var(--index) * 45ms + 0.1s);
+  transform: translate(-58%, -82%);
+  animation: sail var(--sail-for) var(--settle) both;
+  animation-delay: var(--sail-delay);
 }
 
 .marker svg {
   overflow: visible;
-  fill: var(--tone);
-  stroke: var(--paper);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-  paint-order: stroke;
-  transform-origin: 50% 90%;
-  animation: bob 0.7s ease-in-out both;
-  animation-delay: calc(var(--index) * 45ms + 0.1s);
+  transform-origin: 50% 85%;
+  animation:
+    ride calc(var(--sail-for) / 4) ease-in-out 4 alternate,
+    idle 3.6s ease-in-out infinite;
+  animation-delay: var(--sail-delay), calc(var(--sail-delay) + var(--sail-for));
 }
 
-.marker .windows {
-  fill: var(--paper);
-  stroke: none;
+.marker .outline > * {
+  stroke: var(--ink-soft);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  paint-order: stroke;
 }
+
+.marker .hull { fill: var(--calmac-black); }
+.marker .decks { fill: var(--calmac-white); }
+.marker .funnel,
+.marker .waterline { fill: var(--calmac-red); }
+.marker .funnel-top { fill: var(--calmac-black); }
+.marker .disc { fill: var(--calmac-yellow); }
+.marker .lion { fill: var(--calmac-red); }
+.marker .windows { fill: var(--calmac-black); }
+.marker .mast { stroke: var(--calmac-white); stroke-width: 0.9; stroke-linecap: round; }
+
+.marker .smoke circle {
+  fill: var(--ink-soft);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: puff 0.7s ease-out 2;
+  animation-delay: calc(var(--sail-delay) + var(--puff, 0s));
+}
+
+.marker .smoke circle:nth-child(2) { --puff: 0.12s; }
+.marker .smoke circle:nth-child(3) { --puff: 0.24s; }
 
 .celebration {
   position: absolute;
@@ -611,10 +646,20 @@ h1 {
   }
 }
 
-@keyframes bob {
+@keyframes ride {
+  from { rotate: -3deg; translate: 0 0.5px; }
+  to { rotate: 3deg; translate: 0 -1.5px; }
+}
+
+@keyframes idle {
   0%, 100% { rotate: 0deg; translate: 0 0; }
-  30% { rotate: -5deg; translate: 0 -1px; }
-  65% { rotate: 3deg; translate: 0 0.5px; }
+  50% { rotate: -2deg; translate: 0 -1px; }
+}
+
+@keyframes puff {
+  0% { opacity: 0; scale: 0.4; translate: 0 0; }
+  25% { opacity: 0.8; }
+  100% { opacity: 0; scale: 1.6; translate: -6px -5px; }
 }
 
 @keyframes burst {
@@ -678,6 +723,7 @@ h1 {
   .fill,
   .marker,
   .marker svg,
+  .marker .smoke circle,
   .thumb {
     animation: none;
   }

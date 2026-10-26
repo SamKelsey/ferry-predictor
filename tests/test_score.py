@@ -40,6 +40,12 @@ def sailing(observed_at: str, departs: str, status: str) -> dict:
     ),
     pytest.param(
         [prediction('2026-10-19T08:00:00+00:00', EARLY, 1, '0.4')],
+        [sailing('2026-10-18T08:00:00+00:00', EARLY, 'SCHEDULED'), sailing('2026-10-19T09:00:00+00:00', EARLY, 'REMOVED')],
+        [(1, 0.4, True)],
+        id='sailing CalMac stopped listing is cancelled',
+    ),
+    pytest.param(
+        [prediction('2026-10-19T08:00:00+00:00', EARLY, 1, '0.4')],
         [sailing('2026-10-19T09:00:00+00:00', EARLY, 'CANCELLED'), sailing('2026-10-19T10:00:00+00:00', EARLY, 'SCHEDULED')],
         [(1, 0.4, False)],
         id='reinstated sailing is not cancelled',

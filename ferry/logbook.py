@@ -19,10 +19,21 @@ def read(path: Path) -> list[Row]:
         return list(csv.DictReader(f))
 
 
+def latest(logged: list[Row], key: tuple[str, ...]) -> dict[tuple[str, ...], Row]:
+    """The latest logged values for each key, without when they were observed."""
+    return {_key(r, key): _values(r) for r in logged}
+
+
 def changes(logged: list[Row], observed: list[Row], key: tuple[str, ...]) -> list[Row]:
     """Observed rows that differ from the latest logged row with the same key."""
-    latest = {_key(r, key): _values(r) for r in logged}
-    return [r for r in observed if latest.get(_key(r, key)) != _values(r)]
+    last = latest(logged, key)
+    return [r for r in observed if last.get(_key(r, key)) != _values(r)]
+
+
+def missing(logged: list[Row], observed: list[Row], key: tuple[str, ...]) -> list[Row]:
+    """The latest logged row for each key that was not observed."""
+    seen = {_key(r, key) for r in observed}
+    return [r for k, r in latest(logged, key).items() if k not in seen]
 
 
 def record(path: Path, observed: list[Row], key: tuple[str, ...], observed_at: str) -> int:

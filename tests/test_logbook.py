@@ -63,3 +63,13 @@ def test_record_appends_only_changes(tmp_path):
         {'observed_at': 't0', 'id': '1', 'rescheduled': ''},
         {'observed_at': 't2', 'id': '1', 'rescheduled': '10:30'},
     ]
+
+
+def test_missing_gives_the_latest_row_of_each_unobserved_key():
+    logged = [
+        {'observed_at': 't0', 'id': '1', 'status': 'SCHEDULED'},
+        {'observed_at': 't0', 'id': '2', 'status': 'SCHEDULED'},
+        {'observed_at': 't1', 'id': '2', 'status': 'CANCELLED'},
+    ]
+
+    assert logbook.missing(logged, [{'id': '1', 'status': 'SCHEDULED'}], KEY) == [{'id': '2', 'status': 'CANCELLED'}]

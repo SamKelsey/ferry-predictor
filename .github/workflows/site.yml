@@ -32,7 +32,7 @@ jobs:
 
       - run: pip install .
 
-      - run: python -m ferry.predict models/model.joblib web/public/predictions.json data/predictions.csv
+      - run: python -m ferry.predict models/model.joblib web/public/predictions.json data/predictions.csv data/sailings.csv
 
       - name: Commit predictions
         working-directory: data

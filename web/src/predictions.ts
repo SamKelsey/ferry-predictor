@@ -43,6 +43,11 @@ export function localDate(instant: string | number | Date): string {
   return isoDate.format(new Date(instant))
 }
 
+/** A UK date and time as 'YYYY-MM-DD HH:MM', which sorts in time order. */
+export function localStamp(instant: string): string {
+  return `${localDate(instant)} ${localTime(instant)}`
+}
+
 export function daysBetween(from: string, to: string): number {
   return Math.round((Date.parse(to) - Date.parse(from)) / DAY_MS)
 }

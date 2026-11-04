@@ -962,3 +962,41 @@ Arrive Troon – 19:20"
 2026-11-04T16:20:47+00:00,003,routestatus-44cb7aeb-c082-4d00-a744-df603b78b3d0,Friday 6 November,SAILING,DISRUPTIONS,,2026-11-06T00:00:00.000Z,2026-11-07T00:00:00.000Z,2026-11-04T16:18:18.393Z,"Due to MV Caledonian Isles berthing in Troon overnight, the 07:00 sailing from Ardrossan has been cancelled and will now depart from Troon at 06:30.
 
 The normal Ardrossan – Brodick timetable will resume with the 08:20 sailing departing Brodick."
+2026-11-04T16:31:05+00:00,003,routestatus-120363d8-5f7e-4dca-93cd-f3fecb5beeef,Thursday 5 November,SAILING,DISRUPTIONS,Weather,2026-11-05T00:00:00.000Z,2026-11-06T00:00:00.000Z,2026-11-04T16:28:36.141Z,"Due to Easterly winds, MV Caledonian Isles will operate the following amended timetable:
+
+**Depart** Ardrossan – 07:00 (Original Sailing)
+
+Arrive Brodick – 07:55
+
+**Depart** Brodick – 09:10
+
+Arrive Troon – 10:30
+
+**Depart** Troon – 11:30
+
+Arrive Brodick – 12:50
+
+**Depart** Brodick – 13:20
+
+Arrive Troon – 14:40
+
+**Depart** Troon – 16:00
+
+Arrive Brodick – 17:20
+
+**Depart** Brodick – 18:00
+
+Arrive Troon – 19:20
+
+Due to this amended timetable, the following shuttle bus timetable will operate:
+
+**Depart** Ardrossan: 10:30, 15:00
+
+**Depart** Troon: 10:50, 15:00, 19:40"
+2026-11-04T16:31:05+00:00,003,routestatus-44cb7aeb-c082-4d00-a744-df603b78b3d0,Friday 6 November,SAILING,DISRUPTIONS,,2026-11-06T00:00:00.000Z,2026-11-07T00:00:00.000Z,2026-11-04T16:29:15.028Z,"Due to MV Caledonian Isles berthing in Troon overnight, the 07:00 sailing from Ardrossan has been cancelled and will now depart from Troon at 06:30.
+
+The normal Ardrossan – Brodick timetable will resume with the 08:20 sailing departing Brodick.
+
+Due to this cancelled sailing the following shuttle bus will operate:
+
+**Depart** Ardrossan: 05:30"

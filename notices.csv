@@ -1000,3 +1000,37 @@ The normal Ardrossan – Brodick timetable will resume with the 08:20 sailing de
 Due to this cancelled sailing the following shuttle bus will operate:
 
 **Depart** Ardrossan: 05:30"
+2026-11-04T19:21:01+00:00,003,routestatus-120363d8-5f7e-4dca-93cd-f3fecb5beeef,Thursday 5 November,SAILING,DISRUPTIONS,Weather,2026-11-04T00:00:00.000Z,2026-11-06T00:00:00.000Z,2026-11-04T19:19:39.429Z,"Due to Easterly winds, MV Caledonian Isles will operate the following amended timetable:
+
+**Depart** Ardrossan – 07:00 (Original Sailing)
+
+Arrive Brodick – 07:55
+
+**Depart** Brodick – 09:10
+
+Arrive Troon – 10:30
+
+**Depart** Troon – 11:30
+
+Arrive Brodick – 12:50
+
+**Depart** Brodick – 13:20
+
+Arrive Troon – 14:40
+
+**Depart** Troon – 16:00
+
+Arrive Brodick – 17:20
+
+**Depart** Brodick – 18:00
+
+Arrive Troon – 19:20
+
+Due to this amended timetable, the following shuttle bus timetable will operate:
+
+**Depart** Ardrossan: 10:30, 15:00
+
+**Depart** Troon: 10:50, 15:00, 19:40"
+2026-11-04T19:21:01+00:00,003,routestatus-ecfb4902-f483-4d05-81ea-f6b0f4413d8e,Livestock Information,SAILING,BE_AWARE,Operational,2026-11-07T19:50:00.000Z,2027-02-28T12:00:00.000Z,2026-11-04T19:19:13.514Z,"Due to operational reasons, MV Caledonian Isles is unable to carry livestock until further notice. 
+
+Livestock transport is available for customers on the [Troon - Brodick](https://www.calmac.co.uk/en-gb/service-status/#/service-status/301/sailings) service operated by MV Alfred."

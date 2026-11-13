@@ -1313,3 +1313,8 @@ The 19:20 is expected to operate as timetabled."
  "
 2026-11-13T10:50:59+00:00,301,routestatus-a0f88915-abf6-4dbc-8598-880c04720d84,A841 Road Closure,SERVICE,NONE,,2026-11-02T15:04:00.000Z,2026-11-17T00:00:00.000Z,2026-11-13T10:48:00.099Z,"Following recent storms, there is a road closure on the A841 between Lochranza and Catacol.  There is a significant diversion in place and we advise to plan accordingly for those travelling to/from Brodick."
 2026-11-13T13:50:58+00:00,003,routestatus-fd4dd17d-db87-4167-8906-70165dfb3418,Friday 13 November,SAILING,NONE,Operational,2026-11-12T20:35:00.000Z,2026-11-13T14:00:00.000Z,2026-11-13T13:41:30.268Z,Repairs have been made to the sector light at Ardrossan and this service is no longer liable to disruption or cancellation at short notice.
+2026-11-13T19:01:10+00:00,003,routestatus-061804be-6635-4415-ad72-9cda870b2095,A841 Road Closure,SERVICE,NONE,,2026-11-02T14:59:00.000Z,2026-11-17T00:00:00.000Z,2026-11-13T18:55:34.362Z,"Following recent storms, there is a road closure on the A841 between Lochranza and Catacol.  There is a significant diversion in place and we advise to plan accordingly for those travelling to/from Brodick.
+
+
+ "
+2026-11-13T19:01:10+00:00,301,routestatus-a0f88915-abf6-4dbc-8598-880c04720d84,A841 Road Closure,SERVICE,NONE,,2026-11-02T15:04:00.000Z,2026-11-17T00:00:00.000Z,2026-11-13T18:57:32.128Z,"Following recent storms, there is a road closure on the A841 between Lochranza and Catacol.  There is a significant diversion in place and we advise to plan accordingly for those travelling to/from Brodick."

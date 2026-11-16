@@ -12,12 +12,12 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Builds queue so two never commit predictions.csv at once.
+    concurrency:
+      group: publish-build
     steps:
       - uses: actions/checkout@v4
 
@@ -67,6 +67,11 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # A newer deploy replaces one still waiting on the github-pages
+    # environment, so a deploy that never starts can't block the site.
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

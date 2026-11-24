@@ -6484,3 +6484,29 @@ Due to adverse weather, service is liable to disruption or cancellation at short
 2026-11-23T19:10:54+00:00,301,routestatus-8672249b-9abc-4c0e-861b-f7461c971924,Monday 23 November,SAILING,ALL_SAILINGS_CANCELLED,Weather,2026-11-22T15:41:00.000Z,2026-11-23T20:00:00.000Z,2026-11-23T19:05:33.510Z,"Due to an adverse weather forecast this evening into Tuesday morning, the 18:10 departing Troon is **cancelled**.
 
 A bus will operate from Troon to Ardrossan (via Troon station) at 20:35 this evening."
+2026-11-24T05:10:53+00:00,003,routestatus-f253c5c6-faaf-48c9-bd9b-b6324b2a3582,Tuesday 24 November,SAILING,DISRUPTIONS,Weather,2026-11-24T00:00:00.000Z,2026-11-25T00:00:00.000Z,2026-11-24T05:05:27.429Z,"Due to expected swell and forecast easterly winds, MV Caledonian Isles will operate via Troon to the following timetable:
+
+**Depart** Troon 07:00
+
+Arrive Brodick 08:20
+
+**Depart** Brodick 09:10
+
+Arrive Troon 10:30
+
+**Depart** Troon 11:30
+
+Arrive Brodick 12:50
+
+Service remains liable to disruption or cancellation at short notice.
+
+A review will take place at approximately 11:00 to determine whether MV Caledonian Isles will continue operating via Troon or resume service to/from Ardrossan."
+2026-11-24T05:10:53+00:00,301,routestatus-11e75554-3f4e-4238-8fde-75b369a86143,Tuesday 24 November,SAILING,DISRUPTIONS,Weather,2026-11-24T00:00:00.000Z,2026-11-25T00:00:00.000Z,2026-11-24T05:06:17.802Z,"As a result of the cancellation of the 18:10 sailing from Troon on Monday, the 07:30 departing Brodick on Tuesday 24 November is **cancelled.**
+
+Due to expected swell conditions in Brodick, the following services are **cancelled:**
+
+**Depart** Troon 10:15
+
+**Depart** Brodick 12:05
+
+Due to adverse weather, service is liable to disruption or cancellation at short notice."
